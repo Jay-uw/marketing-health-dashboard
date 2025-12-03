@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marketing Health Dashboard - Solano Immigration Law Firm</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap');
 
         :root {
             --color-primary-red: #a51710;
@@ -36,45 +38,107 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            
-            background-image: url('backgroundwebsite.jpg');
+            background-image: url('backgroundwebsite.jpg'); /* Ensure this file exists */
             background-color: var(--color-background); 
             background-attachment: fixed;
             background-position: center center;
             background-repeat: no-repeat;
             background-size: cover;
+            overflow-x: hidden;
         }
 
+        /* --- HEADER --- */
+        header {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 15px 40px;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        header .brand { display: flex; align-items: center; gap: 20px; }
+        header img.logo { height: 50px; width: auto; }
+        header h1 { font-size: 22px; margin: 0; font-weight: 700; color: var(--color-black); }
+
+        /* --- HERO SECTION & 3D GRAPH --- */
+        .hero-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            max-width: 1400px;
+            margin: 60px auto;
+            padding: 0 40px;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .hero-text {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            border-left: 5px solid var(--color-primary-red);
+        }
+
+        .hero-text h2 { font-size: 36px; margin-top: 0; color: var(--color-primary-red); }
+        .hero-text p { font-size: 16px; line-height: 1.6; color: #555; }
+
+        .hero-3d-container {
+            width: 100%;
+            height: 400px;
+            position: relative;
+        }
+
+        /* --- USAGE GUIDE --- */
+        .guide-section {
+            max-width: 1400px;
+            margin: 0 auto 60px auto;
+            padding: 0 40px;
+        }
+        
+        .guide-steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .step-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .step-card:hover { transform: translateY(-5px); }
+        .step-number { 
+            background: var(--color-primary-red); 
+            color: white; 
+            width: 40px; 
+            height: 40px; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-weight: 700; 
+            margin: 0 auto 20px auto;
+            font-size: 18px;
+        }
+        .step-card h3 { margin: 0 0 10px 0; font-size: 18px; }
+        .step-card p { font-size: 14px; color: #666; margin: 0; }
+
+        /* --- MAIN DASHBOARD LAYOUT --- */
         .container {
             max-width: 1600px;
             width: 100%;
             margin: 0 auto;
-            flex-grow: 1;
-            padding: 40px 24px;
+            padding: 0 24px 40px 24px;
             box-sizing: border-box;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 50px; 
-            background-color: rgba(255, 255, 255, 0.85);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(5px);
-        }
-
-        header img.logo {
-            height: 60px; 
-            width: auto;
-            margin-bottom: 20px;
-        }
-
-        header h1 {
-            font-size: 28px;
-            color: var(--color-dark-gray-text);
-            margin: 0;
-            font-weight: 700;
+            flex-grow: 1;
         }
 
         .main-layout {
@@ -84,243 +148,228 @@
             align-items: flex-start;
         }
 
+        /* --- SIDEBAR --- */
         .controls-panel {
             background: var(--color-white);
             border-radius: 12px;
             box-shadow: var(--shadow);
             padding: 24px;
             position: sticky;
-            top: 40px;
+            top: 100px; 
         }
 
-        .controls-panel h2 {
-            margin-top: 0;
-            font-size: 18px;
-            border-bottom: 2px solid var(--color-primary-red);
-            padding-bottom: 10px;
-            margin-bottom: 24px;
-        }
+        .controls-panel h2 { margin-top: 0; font-size: 18px; border-bottom: 2px solid var(--color-primary-red); padding-bottom: 10px; margin-bottom: 24px; }
+        .controls-panel h3 { font-size: 15px; font-weight: 700; color: var(--color-primary-red); margin-top: 20px; margin-bottom: 16px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+        .controls-panel h3:first-of-type { margin-top: 0; }
+        .control-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; }
+        .control-group input[type="number"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-family: 'Montserrat', sans-serif; margin-bottom: 20px; }
+
+        /* --- DASHBOARD SECTIONS --- */
+        .dashboard-sections { display: flex; flex-direction: column; gap: 40px; min-width: 0; }
+        .dashboard-level { background: var(--color-white); border-radius: 12px; box-shadow: var(--shadow); padding: 24px; }
         
-        .controls-panel h3 {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--color-primary-red);
-            margin-top: 20px;
-            margin-bottom: 16px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 8px;
-        }
-        
-        .controls-panel h3:first-of-type {
-            margin-top: 0;
-        }
-
-        .control-group label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-
-        .control-group input[type="number"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            box-sizing: border-box;
-            font-family: 'Montserrat', sans-serif;
-            margin-bottom: 20px;
-        }
-
-        .dashboard-sections {
+        /* Section Header & Filters */
+        .section-header {
             display: flex;
-            flex-direction: column;
-            gap: 40px;
-            min-width: 0;
-        }
-
-        .dashboard-level {
-            background: var(--color-white);
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            padding: 24px;
-        }
-
-        .dashboard-level h2 {
-            margin-top: 0;
-            font-size: 22px;
+            justify-content: space-between;
+            align-items: center;
             border-bottom: 1px solid #eee;
             padding-bottom: 15px;
             margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
-        
-        .level-content {
+
+        .dashboard-level h2 { margin: 0; font-size: 22px; }
+
+        .result-filters {
             display: flex;
-            flex-direction: column;
-            gap: 30px;
-            align-items: flex-start;
+            gap: 15px;
+            align-items: center;
         }
         
-        .data-display-area {
-            min-width: 0;
-            width: 100%;
-        }
-        
-        .file-upload-area {
-            width: 250px;
-        }
-
-        .file-upload-area .control-group { margin-bottom: 0; }
-
-        .file-upload-btn {
-            display: block;
-            width: 100%;
-            padding: 12px;
-            background-color: var(--color-primary-red);
-            color: var(--color-white);
-            border: none;
+        .result-filters select {
+            padding: 8px 12px;
             border-radius: 6px;
-            cursor: pointer;
-            text-align: center;
-            font-weight: 700; 
-            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid #ccc;
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f9f9f9;
+            min-width: 200px;
         }
         
+        .level-content { display: flex; flex-direction: column; gap: 30px; align-items: flex-start; }
+        .data-display-area { min-width: 0; width: 100%; }
+        
+        /* File Upload */
+        .file-upload-area { width: 100%; max-width: 300px; }
+        .file-upload-btn { display: block; width: 100%; padding: 12px; background-color: var(--color-primary-red); color: var(--color-white); border: none; border-radius: 6px; cursor: pointer; text-align: center; font-weight: 700; transition: 0.2s; }
+        .file-upload-btn:hover { background-color: #80110c; }
         input[type="file"] { display: none; }
 
-        .summary-cards {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .card { padding: 20px; border: 1px solid var(--color-light-gray); border-radius: 8px;}
-        .card .card-title { font-size: 14px; font-weight: 600; }
+        /* Summary Cards */
+        .summary-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
+        .card { padding: 20px; border: 1px solid var(--color-light-gray); border-radius: 8px; background: #fff;}
+        .card .card-title { font-size: 14px; font-weight: 600; color: #777; }
         .card .card-value { font-size: 32px; font-weight: 700; margin-top: 8px; }
         .card .card-value.red { color: var(--health-urgent); }
         
-        .table-container { 
-            overflow-x: auto; 
-            overflow-y: auto;
-            max-height: 70vh;
-        }
-        
+        /* Table */
+        .table-container { overflow-x: auto; max-height: 70vh; border: 1px solid #eee; border-radius: 8px; }
         table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 16px 20px; text-align: left; border-bottom: 1px solid var(--color-light-gray); white-space: nowrap; }
+        th, td { padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--color-light-gray); white-space: nowrap; font-size: 14px; }
+        th { background-color: #f8f9fa; font-weight: 700; font-size: 12px; text-transform: uppercase; position: sticky; top: 0; z-index: 10; color: #555; }
         
-        th { 
-            background-color: #f8f9fa; 
-            font-weight: 700; 
-            font-size: 13px; 
-            text-transform: uppercase; 
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-        
-        td.video-link-cell {
-            max-width: 200px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        
-        td.video-link-cell a {
-            color: var(--color-primary-red);
-            text-decoration: none;
-            font-weight: 600;
-        }
-        td.video-link-cell a:hover {
-            text-decoration: underline;
-        }
+        td.video-link-cell { max-width: 200px; overflow: hidden; text-overflow: ellipsis; }
+        td.video-link-cell a { color: var(--color-primary-red); text-decoration: none; font-weight: 600; }
+        td.video-link-cell a:hover { text-decoration: underline; }
 
-        .health-cell { display: flex; align-items: center; gap: 12px; }
-        .health-score { font-weight: 700; padding: 4px 10px; border-radius: 16px; color: white; font-size: 14px; }
+        .health-cell { display: flex; align-items: center; gap: 10px; }
+        .health-score { font-weight: 700; padding: 3px 8px; border-radius: 12px; color: white; font-size: 12px; min-width: 25px; text-align: center;}
 
-        /* --- CLASES PARA COLOREAR CELDAS --- */
+        /* Text Colors */
         .metric-value { font-weight: 600; }
         .text-excellent { color: var(--health-excellent); }
         .text-good { color: var(--health-good); }
-        .text-review { color: #b08f0d; } /* Darker yellow */
+        .text-review { color: #b08f0d; }
         .text-attention { color: var(--health-attention); }
         .text-urgent { color: var(--health-urgent); }
         .text-neutral { color: var(--color-dark-gray-text); }
 
-
+        /* --- FOOTER & BADGES --- */
         footer {
             background-color: var(--color-black);
             color: var(--color-medium-gray);
-            padding: 40px 24px;
-            margin-top: 60px; 
+            padding: 60px 24px;
+            margin-top: auto;
             text-align: center;
             font-size: 14px;
         }
         
-        footer .credits-block p {
-            margin: 4px 0;
-        }
-        
-        footer .meta-badge-container {
-            margin-top: 15px;
+        footer strong { color: white; }
+
+        /* Badge Layout Configuration */
+        .badges-wrapper {
             display: flex;
             justify-content: center;
-            min-height: 270px;
+            align-items: center; /* Vertically center items */
+            gap: 40px; /* Space between badges */
+            margin-top: 50px;
+            flex-wrap: wrap;
+        }
+
+        .badge-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+        }
+
+        .badge-item:hover {
+            transform: scale(1.05);
+        }
+
+        /* Adjust HubSpot Image size */
+        .academy-badge img {
+            height: 120px; 
+            width: auto;
+            display: block;
+        }
+
+        /* Make Meta badge (Center) slightly larger or prominent if needed */
+        .badge-item.meta-badge {
+            transform: scale(1.1); /* 10% larger */
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hero-section { grid-template-columns: 1fr; text-align: center; }
+            .hero-text { border-left: none; border-top: 5px solid var(--color-primary-red); }
+            .main-layout { grid-template-columns: 1fr; }
+            .controls-panel { position: static; margin-bottom: 40px; }
+            .guide-steps { grid-template-columns: 1fr; }
+            .badges-wrapper { flex-direction: column; gap: 20px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <header>
+    <header>
+        <div class="brand">
             <img src="slf_logo.png" alt="Solano Immigration Law Firm Logo" class="logo">
             <h1>Marketing Health Dashboard</h1>
-        </header>
-        
+        </div>
+        <div style="font-size: 12px; font-weight: 600; color: var(--color-primary-red);">INTERNAL USE ONLY</div>
+    </header>
+
+    <section class="hero-section">
+        <div class="hero-text">
+            <h2>Data-Driven Decisions</h2>
+            <p>
+                Welcome to the <strong>Marketing Health Dashboard</strong>. This tool is designed for the <strong>Solano Immigration Law Firm</strong> team. 
+                It analyzes Meta Ads and TikTok performance, visualizing critical metrics against our KPIs to optimize client acquisition strategies.
+            </p>
+        </div>
+        <div class="hero-3d-container" id="scene-container">
+            </div>
+    </section>
+
+    <section class="guide-section">
+        <div class="guide-steps">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h3>Set Targets</h3>
+                <p>Define your KPI targets in the sidebar (Cost per Lead, Views, Engagement) to calibrate the health scoring algorithm.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h3>Upload Data</h3>
+                <p>Export your reports from Meta Ads Manager or TikTok Analytics as <strong>.xlsx</strong> files and upload them to the corresponding section.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <h3>Filter & Analyze</h3>
+                <p>Use the drop-down filters to select specific Accounts or States (e.g., GA, AL). Focus on items marked "Urgent".</p>
+            </div>
+        </div>
+    </section>
+    
+    <div class="container">
         <main class="main-layout">
             <aside class="controls-panel">
-                <h2>Parameters</h2>
+                <h2>Parameters (KPIs)</h2>
                 
                 <div class="parameters-group">
-                    <h3>Meta Ads</h3>
+                    <h3>Meta Ads Targets</h3>
                     <div class="control-group">
-                        <label for="metaCostPerConversationTarget">Cost per Msg Conversation (Target)</label>
+                        <label for="metaCostPerConversationTarget">Target CPA (Msg)</label>
                         <input id="metaCostPerConversationTarget" type="number" value="8" step="0.5">
                     </div>
                     <div class="control-group">
-                        <label for="metaNewContactsTarget">New Messaging Contacts (Target)</label>
+                        <label for="metaNewContactsTarget">Target Volume (Contacts)</label>
                         <input id="metaNewContactsTarget" type="number" value="150" step="1">
                     </div>
                     <div class="control-group">
-                        <label for="metaImpressionsTarget">Impressions (Target)</label>
+                        <label for="metaImpressionsTarget">Target Impressions</label>
                         <input id="metaImpressionsTarget" type="number" value="100000" step="1000">
-                    </div>
-                    <div class="control-group">
-                        <label for="metaReachTarget">Reach (Target)</label>
-                        <input id="metaReachTarget" type="number" value="80000" step="1000">
                     </div>
                 </div>
 
                 <div class="parameters-group">
-                    <h3>TikTok Posts</h3>
+                    <h3>TikTok Targets</h3>
                     <div class="control-group">
-                        <label for="tiktokViewsTarget">Views (Target)</label>
+                        <label for="tiktokViewsTarget">Target Views</label>
                         <input id="tiktokViewsTarget" type="number" value="5000" step="100">
                     </div>
                     <div class="control-group">
-                        <label for="tiktokEngageTarget">Engagement Rate (Target %)</label>
+                        <label for="tiktokEngageTarget">Target Engagement %</label>
                         <input id="tiktokEngageTarget" type="number" value="8" step="0.5">
                     </div>
                     <div class="control-group">
-                        <label for="tiktokWatchTimeTarget">Avg. Watch Time (Target %)</label>
+                        <label for="tiktokWatchTimeTarget">Target Watch Time %</label>
                         <input id="tiktokWatchTimeTarget" type="number" value="60" step="1">
                     </div>
                     <div class="control-group">
-                        <label for="tiktokCompletionTarget">Completion Rate (Target %)</label>
-                        <input id="tiktokCompletionTarget" type="number" value="40" step="1">
-                    </div>
-                    <div class="control-group">
-                        <label for="tiktokRetentionTarget">Retention at 3s (Target %)</label>
+                        <label for="tiktokRetentionTarget">Target Retention (3s) %</label>
                         <input id="tiktokRetentionTarget" type="number" value="70" step="1">
                     </div>
                 </div>
@@ -329,7 +378,13 @@
             <div class="dashboard-sections">
 
                 <section class="dashboard-level" id="tiktok-section">
-                    <h2>TikTok Posts</h2>
+                    <div class="section-header">
+                        <h2>TikTok Posts</h2>
+                        <div class="result-filters">
+                            <label for="tiktokAccountFilter" style="font-size: 13px; font-weight: 600;">Filter by Account:</label>
+                            <select id="tiktokAccountFilter"><option value="all">All Accounts</option></select>
+                        </div>
+                    </div>
                     <div class="level-content">
                         <div class="file-upload-area">
                             <div class="control-group">
@@ -342,31 +397,23 @@
                             <div class="summary-cards">
                                 <div class="card"><div class="card-title">Total Posts</div><div class="card-value total-count">—</div></div>
                                 <div class="card"><div class="card-title">Avg. Engagement</div><div class="card-value avg-engagement">—</div></div>
-                                <div class="card"><div class="card-title">Posts Requiring Action</div><div class="card-value action-count red">—</div></div>
+                                <div class="card"><div class="card-title">Action Required</div><div class="card-value action-count red">—</div></div>
                             </div>
                             <div class="table-container">
                                 <table>
                                     <thead>
                                         <tr>
-                                            <th>Health Score</th>
-                                            <th>Date Posted</th>
+                                            <th>Health</th>
+                                            <th>Date</th>
                                             <th>Account</th>
                                             <th>Video Link</th>
                                             <th>Views</th>
-                                            <th>Likes</th>
-                                            <th>Comments</th>
-                                            <th>Shares</th>
-                                            <th>Saves</th>
-                                            <th>Engagement Rate</th>
-                                            <th>Video Length (s)</th>
-                                            <th>Avg. Watch Time</th>
-                                            <th>Avg. Watch Time %</th>
-                                            <th>Completion Rate</th>
-                                            <th>New Followers</th>
-                                            <th>Retention @ 3s</th>
+                                            <th>Eng. Rate</th>
+                                            <th>Watch Time %</th>
+                                            <th>Retention (3s)</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="table-body"><tr><td colspan="16" style="text-align: center; padding: 40px;">Upload a file to see TikTok post data.</td></tr></tbody>
+                                    <tbody class="table-body"><tr><td colspan="8" style="text-align: center; padding: 40px;">Upload a file to see TikTok data.</td></tr></tbody>
                                 </table>
                             </div>
                         </div>
@@ -374,24 +421,28 @@
                 </section>
 
                 <section class="dashboard-level" id="campaigns-section">
-                    <h2>Campaigns (Meta)</h2>
+                    <div class="section-header">
+                        <h2>Campaigns (Meta)</h2>
+                        <div class="result-filters">
+                            <label for="campaignsAccountFilter" style="font-size: 13px; font-weight: 600;">Filter by State:</label>
+                            <select id="campaignsAccountFilter"><option value="all">All States</option></select>
+                        </div>
+                    </div>
                     <div class="level-content">
                         <div class="file-upload-area">
-                            <div class="control-group">
-                                <input type="file" id="xlsxFileCampaigns" accept=".xlsx">
-                                <label for="xlsxFileCampaigns" class="file-upload-btn">Upload Campaigns XLSX</label>
-                                <p class="fileName" style="font-size: 12px; text-align: center; margin-top: 8px;"></p>
-                            </div>
+                            <input type="file" id="xlsxFileCampaigns" accept=".xlsx">
+                            <label for="xlsxFileCampaigns" class="file-upload-btn">Upload Campaigns XLSX</label>
+                            <p class="fileName" style="font-size: 12px; text-align: center; margin-top: 8px;"></p>
                         </div>
                         <div class="data-display-area">
                             <div class="summary-cards">
                                 <div class="card"><div class="card-title">Total Campaigns</div><div class="card-value total-count">—</div></div>
-                                <div class="card"><div class="card-title">Average Cost / New Contact</div><div class="card-value avg-cost">—</div></div>
-                                <div class="card"><div class="card-title">Campaigns Requiring Action</div><div class="card-value action-count red">—</div></div>
+                                <div class="card"><div class="card-title">Avg CPA</div><div class="card-value avg-cost">—</div></div>
+                                <div class="card"><div class="card-title">Action Required</div><div class="card-value action-count red">—</div></div>
                             </div>
                             <div class="table-container">
                                 <table>
-                                    <thead><tr><th>Health Score</th><th>Campaign Name</th><th>Amount Spent</th><th>New Messaging Contacts</th><th>Cost per Msg Conversation</th><th>Reach</th><th>Impressions</th><th>Link Clicks</th></tr></thead>
+                                    <thead><tr><th>Health</th><th>Campaign Name</th><th>Amount Spent</th><th>New Contacts</th><th>CPA</th><th>Reach</th><th>Impressions</th></tr></thead>
                                     <tbody class="table-body"><tr><td colspan="8" style="text-align: center; padding: 40px;">Upload a file to see campaign data.</td></tr></tbody>
                                 </table>
                             </div>
@@ -400,24 +451,28 @@
                 </section>
 
                 <section class="dashboard-level" id="ad-sets-section">
-                    <h2>Ad Sets (Meta)</h2>
+                    <div class="section-header">
+                        <h2>Ad Sets (Meta)</h2>
+                         <div class="result-filters">
+                            <label for="adSetsAccountFilter" style="font-size: 13px; font-weight: 600;">Filter by State:</label>
+                            <select id="adSetsAccountFilter"><option value="all">All States</option></select>
+                        </div>
+                    </div>
                      <div class="level-content">
                         <div class="file-upload-area">
-                            <div class="control-group">
-                                <input type="file" id="xlsxFileAdSets" accept=".xlsx">
-                                <label for="xlsxFileAdSets" class="file-upload-btn">Upload Ad Sets XLSX</label>
-                                <p class="fileName" style="font-size: 12px; text-align: center; margin-top: 8px;"></p>
-                            </div>
+                            <input type="file" id="xlsxFileAdSets" accept=".xlsx">
+                            <label for="xlsxFileAdSets" class="file-upload-btn">Upload Ad Sets XLSX</label>
+                            <p class="fileName" style="font-size: 12px; text-align: center; margin-top: 8px;"></p>
                         </div>
                         <div class="data-display-area">
                             <div class="summary-cards">
                                 <div class="card"><div class="card-title">Total Ad Sets</div><div class="card-value total-count">—</div></div>
-                                <div class="card"><div class="card-title">Average Cost / New Contact</div><div class="card-value avg-cost">—</div></div>
-                                <div class="card"><div class="card-title">Ad Sets Requiring Action</div><div class="card-value action-count red">—</div></div>
+                                <div class="card"><div class="card-title">Avg CPA</div><div class="card-value avg-cost">—</div></div>
+                                <div class="card"><div class="card-title">Action Required</div><div class="card-value action-count red">—</div></div>
                             </div>
                             <div class="table-container">
                                 <table>
-                                    <thead><tr><th>Health Score</th><th>Ad Set Name</th><th>Amount Spent</th><th>New Messaging Contacts</th><th>Cost per Msg Conversation</th><th>Reach</th><th>Impressions</th><th>Link Clicks</th></tr></thead>
+                                    <thead><tr><th>Health</th><th>Ad Set Name</th><th>Amount Spent</th><th>New Contacts</th><th>CPA</th><th>Reach</th><th>Impressions</th></tr></thead>
                                     <tbody class="table-body"><tr><td colspan="8" style="text-align: center; padding: 40px;">Upload a file to see ad set data.</td></tr></tbody>
                                 </table>
                             </div>
@@ -426,24 +481,28 @@
                 </section>
 
                 <section class="dashboard-level" id="ads-section">
-                    <h2>Ads (Meta)</h2>
+                     <div class="section-header">
+                        <h2>Ads (Meta)</h2>
+                         <div class="result-filters">
+                            <label for="adsAccountFilter" style="font-size: 13px; font-weight: 600;">Filter by State:</label>
+                            <select id="adsAccountFilter"><option value="all">All States</option></select>
+                        </div>
+                    </div>
                      <div class="level-content">
                         <div class="file-upload-area">
-                            <div class="control-group">
-                                <input type="file" id="xlsxFileAds" accept=".xlsx">
-                                <label for="xlsxFileAds" class="file-upload-btn">Upload Ads XLSX</label>
-                                <p class="fileName" style="font-size: 12px; text-align: center; margin-top: 8px;"></p>
-                            </div>
+                            <input type="file" id="xlsxFileAds" accept=".xlsx">
+                            <label for="xlsxFileAds" class="file-upload-btn">Upload Ads XLSX</label>
+                            <p class="fileName" style="font-size: 12px; text-align: center; margin-top: 8px;"></p>
                         </div>
                         <div class="data-display-area">
                             <div class="summary-cards">
                                 <div class="card"><div class="card-title">Total Ads</div><div class="card-value total-count">—</div></div>
-                                <div class="card"><div class="card-title">Average Cost / New Contact</div><div class="card-value avg-cost">—</div></div>
-                                <div class="card"><div class="card-title">Ads Requiring Action</div><div class="card-value action-count red">—</div></div>
+                                <div class="card"><div class="card-title">Avg CPA</div><div class="card-value avg-cost">—</div></div>
+                                <div class="card"><div class="card-title">Action Required</div><div class="card-value action-count red">—</div></div>
                             </div>
                             <div class="table-container">
                                 <table>
-                                    <thead><tr><th>Health Score</th><th>Ad Name</th><th>Amount Spent</th><th>New Messaging Contacts</th><th>Cost per Msg Conversation</th><th>Reach</th><th>Impressions</th><th>Link Clicks</th></tr></thead>
+                                    <thead><tr><th>Health</th><th>Ad Name</th><th>Amount Spent</th><th>New Contacts</th><th>CPA</th><th>Reach</th><th>Impressions</th></tr></thead>
                                     <tbody class="table-body"><tr><td colspan="8" style="text-align: center; padding: 40px;">Upload a file to see ad data.</td></tr></tbody>
                                 </table>
                             </div>
@@ -455,112 +514,216 @@
         </main>
     </div>
 
-    <footer class="footer">
+    <footer>
         <div class="credits-block">
             <p>Created by <strong>Jay Paulino</strong></p>
             <p>Engagement Coordinator</p>
-            <p>Meta Certified Digital Marketing Associate</p>
-            <div class="meta-badge-container">
+        </div>
+        
+        <div class="badges-wrapper">
+            
+            <div class='academy-badge badge-item'>
+                <a href='https://app.hubspot.com/academy/achievements/czbq9921/en/1/jay-paulino/social-media-marketing' title='Social Media Marketing' target="_blank">
+                <img src='https://hubspot-credentials-na1.s3.amazonaws.com/prod/badges/user/0d3177673d894c379fe0977d290cda24.png' alt="Social Media Marketing Badge" />
+                </a>
+            </div>
+
+            <div class="badge-item meta-badge">
                 <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="96d65e88-747c-424f-a469-1d18c9eb4f15" data-share-badge-host="https://www.credly.com"></div>
             </div>
+
+            <div class='academy-badge badge-item'>
+                <a href='https://app.hubspot.com/academy/achievements/vrz0qnzb/en/1/jay-paulino/digital-marketing' title='Digital Marketing ' target="_blank">
+                <img src='https://hubspot-credentials-na1.s3.amazonaws.com/prod/badges/user/b8dfa699f78a43718647d8a44acadaf9.png' alt="Digital Marketing Badge"/>
+                </a>
+            </div>
+
         </div>
-        <p>v.2.2.0</p>
+
+        <p style="margin-top: 30px;">v.3.2.0</p>
     </footer>
-    
-    <script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    // ===========================================
+    // == 3D STATISTICS GRAPH (Three.js) ==
+    // ===========================================
+    function init3D() {
+        const container = document.getElementById('scene-container');
+        if (!container) return;
 
-        // --- PARAMETER INPUTS ---
+        const scene = new THREE.Scene();
+        scene.background = null; 
+
+        const camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
+
+        // Group to hold our bars
+        const group = new THREE.Group();
+        scene.add(group);
+
+        // Create a 3D Bar Graph look
+        const barCount = 10;
+        const bars = [];
+        const geometry = new THREE.BoxGeometry(1, 1, 1);
+        const material = new THREE.MeshStandardMaterial({ 
+            color: 0xa51710, // Brand Red
+            roughness: 0.3,
+            metalness: 0.2
+        });
+        const borderMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
+
+        for (let i = 0; i < barCount; i++) {
+            // Random heights for statistics look
+            const height = Math.random() * 5 + 1; 
+            const bar = new THREE.Mesh(geometry, material);
+            
+            // Position bars in a row
+            bar.position.x = (i - barCount / 2) * 1.5;
+            bar.position.y = height / 2; // Sit on ground
+            bar.scale.y = height;
+            
+            // Store initial scale for animation
+            bar.userData = { initialHeight: height, speed: Math.random() * 0.02 + 0.005, offset: Math.random() * Math.PI };
+
+            group.add(bar);
+            bars.push(bar);
+        }
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(5, 10, 7);
+        scene.add(directionalLight);
+
+        // Camera Positioning
+        camera.position.set(0, 8, 15);
+        camera.lookAt(0, 2, 0);
+
+        // Animation Loop
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Animate bars (Growth breathing effect)
+            const time = Date.now() * 0.001;
+            bars.forEach(bar => {
+                const s = bar.userData;
+                // Oscillate height slightly based on initial height
+                const newHeight = s.initialHeight + Math.sin(time + s.offset) * 0.5;
+                bar.scale.y = Math.max(0.5, newHeight);
+                bar.position.y = bar.scale.y / 2;
+            });
+
+            // Gentle rotation of the whole graph
+            group.rotation.y += 0.002;
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Scroll Effect: Rotate the graph faster/change angle based on scroll
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            group.rotation.y = scrollY * 0.005; 
+            // Tilt slightly
+            group.rotation.x = Math.sin(scrollY * 0.001) * 0.2;
+        });
+
+        // Resize
+        window.addEventListener('resize', () => {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        });
+    }
+
+    // ===========================================
+    // == DASHBOARD LOGIC ==
+    // ===========================================
+    document.addEventListener('DOMContentLoaded', () => {
+        
+        init3D(); // Start the 3D Graph
+
+        // Inputs
         const metaCostPerConversationTargetInput = document.getElementById('metaCostPerConversationTarget');
         const metaNewContactsTargetInput = document.getElementById('metaNewContactsTarget');
         const metaImpressionsTargetInput = document.getElementById('metaImpressionsTarget');
-        const metaReachTargetInput = document.getElementById('metaReachTarget');
         
-        // *** NUEVO INPUT DE TIKTOK ***
         const tiktokViewsTargetInput = document.getElementById('tiktokViewsTarget');
         const tiktokEngageTargetInput = document.getElementById('tiktokEngageTarget');
         const tiktokWatchTimeTargetInput = document.getElementById('tiktokWatchTimeTarget');
-        const tiktokCompletionTargetInput = document.getElementById('tiktokCompletionTarget');
         const tiktokRetentionTargetInput = document.getElementById('tiktokRetentionTarget');
 
-        // --- DASHBOARD STATE ---
+        // Filters DOM Elements
+        const tiktokAccountFilter = document.getElementById('tiktokAccountFilter');
+        const campaignsAccountFilter = document.getElementById('campaignsAccountFilter');
+        const adSetsAccountFilter = document.getElementById('adSetsAccountFilter');
+        const adsAccountFilter = document.getElementById('adsAccountFilter');
+
         const dashboardState = {
-            campaigns: { data: [], nameKey: 'campaign name', headerKey: 'campaign name', requiredKey: 'impressions', sectionId: 'campaigns-section', type: 'meta' },
-            adSets:     { data: [], nameKey: 'ad set name',   headerKey: 'ad set name',   requiredKey: 'impressions', sectionId: 'ad-sets-section', type: 'meta' },
-            ads:        { data: [], nameKey: 'ad name',       headerKey: 'ad name',       requiredKey: 'impressions', sectionId: 'ads-section',     type: 'meta' },
-            tiktok:     { data: [], nameKey: 'video link',    headerKey: 'date posted',   requiredKey: 'views',   sectionId: 'tiktok-section',  type: 'tiktok' }
+            campaigns: { 
+                data: [], nameKey: 'campaign name', headerKey: 'campaign name', requiredKey: 'impressions', 
+                sectionId: 'campaigns-section', type: 'meta', filterElement: campaignsAccountFilter 
+            },
+            adSets: { 
+                data: [], nameKey: 'ad set name', headerKey: 'ad set name', requiredKey: 'impressions', 
+                sectionId: 'ad-sets-section', type: 'meta', filterElement: adSetsAccountFilter 
+            },
+            ads: { 
+                data: [], nameKey: 'ad name', headerKey: 'ad name', requiredKey: 'impressions', 
+                sectionId: 'ads-section', type: 'meta', filterElement: adsAccountFilter 
+            },
+            tiktok: { 
+                data: [], nameKey: 'video link', headerKey: 'date posted', requiredKey: 'views', 
+                sectionId: 'tiktok-section', type: 'tiktok', filterElement: tiktokAccountFilter 
+            }
         };
 
-        // --- TIKTOK COLUMN KEYS ---
         const TIKTOK_COLS = {
             DATE: 'date posted',
             ACCOUNT: 'account',
             LINK: 'video link',
             VIEWS: 'views',
             LIKES: 'likes',
-            COMMENTS: 'comments',
-            SHARES: 'shares',
-            SAVES: 'saves',
             ENGAGEMENT_RATE: 'engagement rate (4-8% strong - 10%+ excellent)',
-            VIDEO_LENGTH: 'video length (in secs)',
-            AVG_WATCH_TIME: 'average watch time',
             AVG_WATCH_TIME_PERCENT: 'average watch time % (60%)',
-            COMPLETION_RATE: 'completion rate (30% is good 50% is excellent)',
-            NEW_FOLLOWERS: 'new followers',
             RETENTION_3S: 'retention rate at 3 sec (65% is good 75%+ is excellent)'
         };
 
-        // --- INITIALIZATION ---
+        // Initialize Listeners
         function init() {
-            // Meta Param Listeners
-            metaCostPerConversationTargetInput.addEventListener('input', () => reRenderAllLevels());
-            metaNewContactsTargetInput.addEventListener('input', () => reRenderAllLevels());
-            metaImpressionsTargetInput.addEventListener('input', () => reRenderAllLevels());
-            metaReachTargetInput.addEventListener('input', () => reRenderAllLevels());
-            
-            // TikTok Param Listeners
-            // *** NUEVO LISTENER ***
-            tiktokViewsTargetInput.addEventListener('input', () => reRenderAllLevels());
-            tiktokEngageTargetInput.addEventListener('input', () => reRenderAllLevels());
-            tiktokWatchTimeTargetInput.addEventListener('input', () => reRenderAllLevels());
-            tiktokCompletionTargetInput.addEventListener('input', () => reRenderAllLevels());
-            tiktokRetentionTargetInput.addEventListener('input', () => reRenderAllLevels());
-            
+            // Parameter Change Listeners
+            [metaCostPerConversationTargetInput, metaNewContactsTargetInput, metaImpressionsTargetInput,
+             tiktokViewsTargetInput, tiktokEngageTargetInput, tiktokWatchTimeTargetInput, tiktokRetentionTargetInput]
+             .forEach(input => input.addEventListener('input', reRenderAllLevels));
+
             // File Upload Listeners
             document.getElementById('xlsxFileCampaigns').addEventListener('change', (e) => handleFileSelect(e, 'campaigns'));
             document.getElementById('xlsxFileAdSets').addEventListener('change', (e) => handleFileSelect(e, 'adSets'));
             document.getElementById('xlsxFileAds').addEventListener('change', (e) => handleFileSelect(e, 'ads'));
             document.getElementById('xlsxFileTikTok').addEventListener('change', (e) => handleFileSelect(e, 'tiktok'));
+
+            // Filter Change Listeners
+            tiktokAccountFilter.addEventListener('change', () => renderData('tiktok'));
+            campaignsAccountFilter.addEventListener('change', () => renderData('campaigns'));
+            adSetsAccountFilter.addEventListener('change', () => renderData('adSets'));
+            adsAccountFilter.addEventListener('change', () => renderData('ads'));
         }
         
-        // --- RERENDER ALL ---
         function reRenderAllLevels() {
             Object.keys(dashboardState).forEach(level => {
-                if (dashboardState[level].data.length > 0) {
-                    renderData(level);
-                }
+                if (dashboardState[level].data.length > 0) renderData(level);
             });
         }
 
-        // --- RENDER DISPATCHER ---
-        function renderData(level) {
-            const levelType = dashboardState[level].type;
-            if (levelType === 'meta') {
-                renderMetaLevel(level);
-            } else if (levelType === 'tiktok') {
-                renderTikTokLevel();
-            }
-        }
-        
-        // --- FILE HANDLING ---
         function handleFileSelect(event, level) {
             const file = event.target.files[0];
             const levelConfig = dashboardState[level];
             const section = document.getElementById(levelConfig.sectionId);
             const fileNameDisplay = section.querySelector('.fileName');
-            const tableBody = section.querySelector('.table-body');
             
             if (!file) { fileNameDisplay.textContent = ''; return; }
 
@@ -574,431 +737,268 @@
                     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
                     
                     let rows;
-                    
                     if (level === 'tiktok') {
                         rows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "", raw: false, dateNF: 'm/d/yyyy' });
                     } else {
                         rows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "", raw: true });
                     }
 
+                    // Find Header Row
                     let headerRowIndex = -1;
-                    for (let i = 0; i < Math.min(rows.length, 10); i++) {
+                    for (let i = 0; i < Math.min(rows.length, 15); i++) {
                         const processedRow = rows[i].map(h => String(h).trim().toLowerCase());
-                        const headerKeyFound = processedRow.includes(levelConfig.headerKey);
-                        const requiredKeyFound = processedRow.includes(levelConfig.requiredKey);
-
-                        if (headerKeyFound && requiredKeyFound) {
+                        if (processedRow.includes(levelConfig.headerKey) && processedRow.includes(levelConfig.requiredKey)) {
                             headerRowIndex = i;
                             break;
                         }
                     }
 
-                    if (headerRowIndex === -1) throw new Error(`Header row with '${levelConfig.headerKey}' and '${levelConfig.requiredKey}' not found. Check file.`);
+                    if (headerRowIndex === -1) throw new Error("Could not find valid headers.");
 
                     const headers = rows[headerRowIndex].map(h => String(h).trim().toLowerCase());
                     const dataRows = rows.slice(headerRowIndex + 1);
 
                     const jsonData = dataRows.map(row => {
                         const obj = {};
-                        headers.forEach((header, index) => { 
-                            if(header) obj[header] = row[index];
-                        });
+                        headers.forEach((header, index) => { if(header) obj[header] = row[index]; });
                         return obj;
                     }).filter(row => row[levelConfig.nameKey] && String(row[levelConfig.nameKey]).trim() !== '');
 
                     levelConfig.data = jsonData;
-
-                    if (jsonData.length === 0) throw new Error("No data found after processing.");
                     
+                    // Populate Filters
+                    populateFilter(level, jsonData);
+
                     renderData(level);
 
                 } catch (error) {
-                    console.error("Error processing XLSX file:", error);
-                    tableBody.innerHTML = `<tr><td colspan="100%" style="text-align: center; padding: 40px; color: var(--health-urgent);">Error: ${error.message}</td></tr>`;
+                    console.error(error);
+                    section.querySelector('.table-body').innerHTML = `<tr><td colspan="8" style="color:red;">Error: ${error.message}</td></tr>`;
                 }
             };
             reader.readAsArrayBuffer(file);
         }
 
-        // ===========================================
-        // == TIKTOK SPECIFIC FUNCTIONS
-        // ===========================================
-
-        function renderTikTokLevel() {
-            const levelConfig = dashboardState.tiktok;
-            const section = document.getElementById(levelConfig.sectionId);
-            const tableBody = section.querySelector('.table-body');
-            const data = levelConfig.data;
+        // --- FILTER LOGIC ---
+        function populateFilter(level, data) {
+            const config = dashboardState[level];
+            const select = config.filterElement;
             
-            // *** AÑADIR NUEVO TARGET AL OBJETO ***
+            // Determine default text based on level
+            const defaultText = (level === 'tiktok') ? "All Accounts" : "All States";
+            select.innerHTML = `<option value="all">${defaultText}</option>`;
+            
+            let uniqueValues = new Set();
+            let keyToFilter = '';
+
+            if (level === 'tiktok') {
+                keyToFilter = TIKTOK_COLS.ACCOUNT;
+                // Standard Collection for TikTok
+                data.forEach(row => {
+                    const val = row[keyToFilter];
+                    if (val) uniqueValues.add(String(val).trim());
+                });
+            } else {
+                // META LOGIC: Detect "GA" or "AL" as WHOLE WORDS in the Name Field
+                // Uses Regex \bGA\b and \bAL\b to avoid matching inside words (e.g., DigitAL, LegAL)
+                keyToFilter = config.nameKey; 
+                
+                const regexGA = /\bGA\b/i;
+                const regexAL = /\bAL\b/i;
+
+                data.forEach(row => {
+                    const nameVal = String(row[keyToFilter] || "");
+                    if (regexGA.test(nameVal)) uniqueValues.add("GA");
+                    if (regexAL.test(nameVal)) uniqueValues.add("AL");
+                });
+            }
+
+            config.filterKey = keyToFilter;
+
+            Array.from(uniqueValues).sort().forEach(val => {
+                const option = document.createElement('option');
+                option.value = val;
+                option.textContent = val;
+                select.appendChild(option);
+            });
+        }
+
+        function renderData(level) {
+            const config = dashboardState[level];
+            const tableBody = document.getElementById(config.sectionId).querySelector('.table-body');
+            
+            // Apply Filter
+            let filteredData = config.data;
+            const filterVal = config.filterElement.value;
+            
+            if (filterVal !== 'all') {
+                if (level === 'tiktok') {
+                    // Exact match for TikTok Account
+                    filteredData = filteredData.filter(row => String(row[config.filterKey]).trim() === filterVal);
+                } else {
+                    // Strict Word Boundary match for Meta (finding " GA " or " AL " as whole words)
+                    // This fixes the issue where "AL" matched "Digital", "Legal", etc.
+                    const regex = new RegExp(`\\b${filterVal}\\b`, 'i');
+                    filteredData = filteredData.filter(row => regex.test(String(row[config.nameKey])));
+                }
+            }
+
+            if (config.type === 'tiktok') {
+                renderTikTokTable(filteredData, tableBody);
+            } else {
+                renderMetaTable(filteredData, tableBody, level);
+            }
+        }
+
+        // --- RENDERERS ---
+
+        function renderTikTokTable(data, tableBody) {
             const targets = { 
-                tiktokViewsTarget: sanitizeNumber(tiktokViewsTargetInput.value),
-                engageTarget: sanitizeNumber(tiktokEngageTargetInput.value), 
-                watchTimeTarget: sanitizeNumber(tiktokWatchTimeTargetInput.value), 
-                completionTarget: sanitizeNumber(tiktokCompletionTargetInput.value), 
-                retentionTarget: sanitizeNumber(tiktokRetentionTargetInput.value) 
+                views: sanitizeNumber(tiktokViewsTargetInput.value),
+                engage: sanitizeNumber(tiktokEngageTargetInput.value), 
+                watch: sanitizeNumber(tiktokWatchTimeTargetInput.value), 
+                retention: sanitizeNumber(tiktokRetentionTargetInput.value) 
             };
 
-            if (!data || data.length === 0) { return; }
-            
-            const dataWithHealth = data.map(row => {
+            const processed = data.map(row => {
                 const healthInfo = getTikTokHealth(row, targets);
-                
-                // *** OBTENER VALOR Y COLOR PARA VIEWS ***
-                const views = sanitizeNumber(row[TIKTOK_COLS.VIEWS]);
-                const engRate = sanitizePercentage(row[TIKTOK_COLS.ENGAGEMENT_RATE]);
-                const watchTime = sanitizePercentage(row[TIKTOK_COLS.AVG_WATCH_TIME_PERCENT]);
-                const completion = sanitizePercentage(row[TIKTOK_COLS.COMPLETION_RATE]);
-                const retention = sanitizePercentage(row[TIKTOK_COLS.RETENTION_3S]);
-                
-                const colors = {
-                    viewsColor: getPerformanceColor(views, targets.tiktokViewsTarget),
-                    engColor: getPerformanceColor(engRate, targets.engageTarget),
-                    watchColor: getPerformanceColor(watchTime, targets.watchTimeTarget),
-                    compColor: getPerformanceColor(completion, targets.completionTarget),
-                    retColor: getPerformanceColor(retention, targets.retentionTarget)
-                };
-                return {...row, healthInfo, colors };
+                return { ...row, healthInfo };
             });
 
-            dataWithHealth.sort((a, b) => b.healthInfo.health - a.healthInfo.health);
+            processed.sort((a, b) => b.healthInfo.health - a.healthInfo.health);
+
             tableBody.innerHTML = '';
-            dataWithHealth.forEach(row => {
+            processed.forEach(row => {
                 const { health, color, label } = row.healthInfo;
-                // *** EXTRAER viewsColor ***
-                const { viewsColor, engColor, watchColor, compColor, retColor } = row.colors;
+                const link = row[TIKTOK_COLS.LINK] || '#';
+                const displayLink = link !== '#' ? `<a href="${link}" target="_blank">View Video</a>` : 'N/A';
+                
                 const tr = document.createElement('tr');
-                const videoLink = row[TIKTOK_COLS.LINK] || 'N/A';
-                const displayLink = videoLink.length > 50 ? videoLink.substring(0, 50) + '...' : videoLink;
-                const linkHTML = videoLink !== 'N/A' 
-                    ? `<a href="${videoLink}" target="_blank" title="${videoLink}">${displayLink}</a>` 
-                    : 'N/A';
-                const datePosted = row[TIKTOK_COLS.DATE] || 'N/A';
                 tr.innerHTML = `
-                    <td><div class="health-cell"><span class="health-score" style="background-color: ${color};">${health}</span><span>${label}</span></div></td>
-                    <td>${datePosted}</td>
-                    <td>${row[TIKTOK_COLS.ACCOUNT] || 'N/A'}</td>
-                    <td class="video-link-cell">${linkHTML}</td>
-                    <td><span class="metric-value ${viewsColor}">${row[TIKTOK_COLS.VIEWS] || 'N/A'}</span></td>
-                    <td>${row[TIKTOK_COLS.LIKES] || 'N/A'}</td>
-                    <td>${row[TIKTOK_COLS.COMMENTS] || 'N/A'}</td>
-                    <td>${row[TIKTOK_COLS.SHARES] || 'N/A'}</td>
-                    <td>${row[TIKTOK_COLS.SAVES] || 'N/A'}</td>
-                    <td><span class="metric-value ${engColor}">${row[TIKTOK_COLS.ENGAGEMENT_RATE] || 'N/A'}</span></td>
-                    <td>${row[TIKTOK_COLS.VIDEO_LENGTH] || 'N/A'}</td>
-                    <td>${row[TIKTOK_COLS.AVG_WATCH_TIME] || 'N/A'}</td>
-                    <td><span class="metric-value ${watchColor}">${row[TIKTOK_COLS.AVG_WATCH_TIME_PERCENT] || 'N/A'}</span></td>
-                    <td><span class="metric-value ${compColor}">${row[TIKTOK_COLS.COMPLETION_RATE] || 'N/A'}</span></td>
-                    <td>${row[TIKTOK_COLS.NEW_FOLLOWERS] || 'N/A'}</td>
-                    <td><span class="metric-value ${retColor}">${row[TIKTOK_COLS.RETENTION_3S] || 'N/A'}</span></td>`;
+                    <td><div class="health-cell"><span class="health-score" style="background-color: ${color};">${health}</span></div></td>
+                    <td>${row[TIKTOK_COLS.DATE] || '-'}</td>
+                    <td>${row[TIKTOK_COLS.ACCOUNT] || '-'}</td>
+                    <td class="video-link-cell">${displayLink}</td>
+                    <td>${sanitizeNumber(row[TIKTOK_COLS.VIEWS]) || 0}</td>
+                    <td>${row[TIKTOK_COLS.ENGAGEMENT_RATE] || '-'}</td>
+                    <td>${row[TIKTOK_COLS.AVG_WATCH_TIME_PERCENT] || '-'}</td>
+                    <td>${row[TIKTOK_COLS.RETENTION_3S] || '-'}</td>
+                `;
                 tableBody.appendChild(tr);
             });
-            updateTikTokSummaryCards(dataWithHealth);
+            updateSummaryCards(processed, 'tiktok');
         }
 
-        // ************************************************************
-        // * ** FUNCIÓN DE LÓGICA DE SALUD DE TIKTOK (NUEVA) **
-        // ************************************************************
-        function getTikTokHealth(row, targets) {
-            
-            // 1. Definir pesos base fijos
-            const baseWeights = {
-                views: 0.15,
-                retention: 0.25,
-                watchTime: 0.20,
-                completion: 0.20,
-                engagement: 0.20
-            };
-
-            // 2. Obtener objetivos (targets)
-            const { tiktokViewsTarget, engageTarget, watchTimeTarget, completionTarget, retentionTarget } = targets;
-
-            // 3. Obtener valores de la fila
-            const views = sanitizeNumber(row[TIKTOK_COLS.VIEWS]);
-            const engRate = sanitizePercentage(row[TIKTOK_COLS.ENGAGEMENT_RATE]);
-            const watchTime = sanitizePercentage(row[TIKTOK_COLS.AVG_WATCH_TIME_PERCENT]);
-            const completion = sanitizePercentage(row[TIKTOK_COLS.COMPLETION_RATE]);
-            const retention = sanitizePercentage(row[TIKTOK_COLS.RETENTION_3S]);
-
-            // 4. Calcular puntuaciones individuales (0-100), todas "Más es Mejor"
-            const scoreViews = (isNaN(views) || isNaN(tiktokViewsTarget) || tiktokViewsTarget <= 0)
-                ? NaN
-                : Math.min(100, (views / tiktokViewsTarget) * 100);
-            
-            const scoreEng = (isNaN(engRate) || isNaN(engageTarget) || engageTarget <= 0) 
-                ? NaN 
-                : Math.min(100, (engRate / engageTarget) * 100);
-            
-            const scoreWatch = (isNaN(watchTime) || isNaN(watchTimeTarget) || watchTimeTarget <= 0)
-                ? NaN
-                : Math.min(100, (watchTime / watchTimeTarget) * 100);
-            
-            const scoreComp = (isNaN(completion) || isNaN(completionTarget) || completionTarget <= 0)
-                ? NaN
-                : Math.min(100, (completion / completionTarget) * 100);
-            
-            const scoreRet = (isNaN(retention) || isNaN(retentionTarget) || retentionTarget <= 0)
-                ? NaN
-                : Math.min(100, (retention / retentionTarget) * 100);
-
-            // 5. Calcular Salud Final con Ponderación Dinámica
-            let totalWeight = 0;
-            let weightedScore = 0;
-
-            if (!isNaN(scoreViews)) {
-                weightedScore += scoreViews * baseWeights.views;
-                totalWeight += baseWeights.views;
-            }
-            if (!isNaN(scoreEng)) {
-                weightedScore += scoreEng * baseWeights.engagement;
-                totalWeight += baseWeights.engagement;
-            }
-            if (!isNaN(scoreWatch)) {
-                weightedScore += scoreWatch * baseWeights.watchTime;
-                totalWeight += baseWeights.watchTime;
-            }
-            if (!isNaN(scoreComp)) {
-                weightedScore += scoreComp * baseWeights.completion;
-                totalWeight += baseWeights.completion;
-            }
-            if (!isNaN(scoreRet)) {
-                weightedScore += scoreRet * baseWeights.retention;
-                totalWeight += baseWeights.retention;
-            }
-
-            if (totalWeight === 0) {
-                return { health: 0, color: 'var(--health-urgent)', label: "No Data" };
-            }
-
-            const health = Math.round(weightedScore / totalWeight);
-            
-            // 6. Asignar Color y Etiqueta
-            let color, label;
-            if (health >= 85) { color = 'var(--health-excellent)'; label = "Excellent"; }
-            else if (health >= 65) { color = 'var(--health-good)'; label = "Good"; }
-            else if (health >= 45) { color = 'var(--health-review)'; label = "Review"; }
-            else if (health >= 25) { color = 'var(--health-attention)'; label = "Attention"; }
-            else { color = 'var(--health-urgent)'; label = "Urgent"; }
-            
-            return { health, color, label };
-        }
-
-        function updateTikTokSummaryCards(dataWithHealth) {
-            const section = document.getElementById(dashboardState.tiktok.sectionId);
-            let totalEngagement = 0;
-            let actionCount = 0;
-            dataWithHealth.forEach(row => {
-                totalEngagement += sanitizePercentage(row[TIKTOK_COLS.ENGAGEMENT_RATE]) || 0;
-                const { label } = row.healthInfo;
-                if (label !== 'Excellent' && label !== 'Good') {
-                    actionCount++;
-                }
-            });
-            const avgEngagement = dataWithHealth.length > 0 ? (totalEngagement / dataWithHealth.length).toFixed(2) : 0;
-            section.querySelector('.total-count').textContent = dataWithHealth.length;
-            section.querySelector('.avg-engagement').textContent = dataWithHealth.length > 0 ? `${avgEngagement}%` : '—';
-            section.querySelector('.action-count').textContent = actionCount;
-        }
-
-
-        // ===========================================
-        // == META ADS SPECIFIC FUNCTIONS
-        // ===========================================
-
-        function renderMetaLevel(level) {
-            const levelConfig = dashboardState[level];
-            const section = document.getElementById(levelConfig.sectionId);
-            const tableBody = section.querySelector('.table-body');
-            const data = levelConfig.data;
-
+        function renderMetaTable(data, tableBody, level) {
             const targets = {
-                costPerConversationTarget: sanitizeNumber(metaCostPerConversationTargetInput.value),
-                newContactsTarget: sanitizeNumber(metaNewContactsTargetInput.value),
-                impressionsTarget: sanitizeNumber(metaImpressionsTargetInput.value),
-                reachTarget: sanitizeNumber(metaReachTargetInput.value)
+                cpa: sanitizeNumber(document.getElementById('metaCostPerConversationTarget').value),
+                contacts: sanitizeNumber(document.getElementById('metaNewContactsTarget').value)
             };
 
-            if (!data || data.length === 0) { return; }
-            
-            const dataWithHealth = data.map(row => {
+            const processed = data.map(row => {
                 const healthInfo = getMetaHealth(row, targets);
-                
-                const cost = sanitizeNumber(row['cost per messaging conversation started (usd)']); 
-                const contacts = sanitizeNumber(row['new messaging contacts']);
-                const impressions = sanitizeNumber(row['impressions']);
-                const reach = sanitizeNumber(row['reach']);
-                
-                const colors = {
-                    costColor: getCostColor(cost, targets.costPerConversationTarget),
-                    contactsColor: getPerformanceColor(contacts, targets.newContactsTarget),
-                    impressionsColor: getPerformanceColor(impressions, targets.impressionsTarget),
-                    reachColor: getPerformanceColor(reach, targets.reachTarget)
-                };
-                
-                return {...row, healthInfo, colors};
+                return { ...row, healthInfo };
             });
-            
-            dataWithHealth.sort((a, b) => b.healthInfo.health - a.healthInfo.health);
+
+            processed.sort((a, b) => b.healthInfo.health - a.healthInfo.health);
 
             tableBody.innerHTML = '';
-            dataWithHealth.forEach(row => {
-                const { health, color, label } = row.healthInfo;
-                const { costColor, contactsColor, impressionsColor, reachColor } = row.colors;
+            const config = dashboardState[level];
+            
+            processed.forEach(row => {
+                const { health, color } = row.healthInfo;
+                
                 const tr = document.createElement('tr');
-                
-                const contactsValue = row['new messaging contacts'] || 'N/A';
-                const costValue = row['cost per messaging conversation started (usd)'] || 'N/A'; 
-                
                 tr.innerHTML = `
-                    <td><div class="health-cell"><span class="health-score" style="background-color: ${color};">${health}</span><span>${label}</span></div></td>
-                    <td>${row[levelConfig.nameKey] || 'N/A'}</td>
-                    <td>${row['amount spent (usd)'] || row['amount spent'] || 'N/A'}</td>
-                    <td><span class="metric-value ${contactsColor}">${contactsValue}</span></td>
-                    <td><span class="metric-value ${costColor}">${costValue}</span></td>
-                    <td><span class="metric-value ${reachColor}">${row['reach'] || 'N/A'}</span></td>
-                    <td><span class="metric-value ${impressionsColor}">${row['impressions'] || 'N/A'}</span></td>
-                    <td>${row['link clicks'] || 'N/A'}</td>`;
+                    <td><div class="health-cell"><span class="health-score" style="background-color: ${color};">${health}</span></div></td>
+                    <td>${row[config.nameKey] || '-'}</td>
+                    <td>$${sanitizeNumber(row['amount spent (usd)'] || row['amount spent']) || 0}</td>
+                    <td>${sanitizeNumber(row['new messaging contacts']) || 0}</td>
+                    <td>$${sanitizeNumber(row['cost per messaging conversation started (usd)']) || 0}</td>
+                    <td>${sanitizeNumber(row['reach']) || 0}</td>
+                    <td>${sanitizeNumber(row['impressions']) || 0}</td>
+                `;
                 tableBody.appendChild(tr);
             });
-            
-            updateMetaSummaryCards(level, dataWithHealth);
+            updateSummaryCards(processed, level);
         }
 
-        function updateMetaSummaryCards(level, dataWithHealth) {
-            const levelConfig = dashboardState[level];
-            const section = document.getElementById(levelConfig.sectionId);
+        // --- HEALTH LOGIC (SIMPLIFIED) ---
+        function getTikTokHealth(row, t) {
+            const views = sanitizeNumber(row[TIKTOK_COLS.VIEWS]);
+            const eng = sanitizePercentage(row[TIKTOK_COLS.ENGAGEMENT_RATE]);
             
-            let totalSpend = 0;
-            let totalNewContacts = 0;
-            let actionCount = 0;
-
-            dataWithHealth.forEach(row => {
-                totalSpend += sanitizeNumber(row['amount spent (usd)'] || row['amount spent']) || 0;
-                totalNewContacts += sanitizeNumber(row['new messaging contacts']) || 0;
-                
-                const { label } = row.healthInfo;
-                if (label !== 'Excellent' && label !== 'Good') {
-                    actionCount++;
-                }
-            });
-
-            const avgCost = totalNewContacts > 0 ? (totalSpend / totalNewContacts).toFixed(2) : 0;
-
-            section.querySelector('.total-count').textContent = dataWithHealth.length;
-            section.querySelector('.avg-cost').textContent = totalNewContacts > 0 ? `$${avgCost}` : '—';
-            section.querySelector('.action-count').textContent = actionCount;
+            // Simple logic: weighted avg
+            let score = 0;
+            if (views >= t.views) score += 40; else score += (views/t.views)*40;
+            if (eng >= t.engage) score += 60; else score += (eng/t.engage)*60;
+            
+            score = Math.round(score);
+            return getColorLabel(score);
         }
 
-        function getMetaHealth(row, targets) {
-            
-            const baseWeights = {
-                cost: 0.40,
-                contacts: 0.40,
-                impressions: 0.10,
-                reach: 0.10
-            };
-
-            const cost = sanitizeNumber(row['cost per messaging conversation started (usd)']);
+        function getMetaHealth(row, t) {
+            const cpa = sanitizeNumber(row['cost per messaging conversation started (usd)']);
             const contacts = sanitizeNumber(row['new messaging contacts']);
-            const impressions = sanitizeNumber(row['impressions']);
-            const reach = sanitizeNumber(row['reach']);
-
-            const { costPerConversationTarget, newContactsTarget, impressionsTarget, reachTarget } = targets;
-
-            const scoreCost = (isNaN(cost) || isNaN(costPerConversationTarget) || costPerConversationTarget <= 0) 
-                ? NaN 
-                : Math.min(100, Math.max(0, (2 - (cost / costPerConversationTarget)) * 100));
-
-            const scoreContacts = (isNaN(contacts) || isNaN(newContactsTarget) || newContactsTarget <= 0)
-                ? NaN
-                : Math.min(100, (contacts / newContactsTarget) * 100);
-
-            const scoreImpressions = (isNaN(impressions) || isNaN(impressionsTarget) || impressionsTarget <= 0)
-                ? NaN
-                : Math.min(100, (impressions / impressionsTarget) * 100);
-
-            const scoreReach = (isNaN(reach) || isNaN(reachTarget) || reachTarget <= 0)
-                ? NaN
-                : Math.min(100, (reach / reachTarget) * 100);
-
-            let totalWeight = 0;
-            let weightedScore = 0;
-
-            if (!isNaN(scoreCost)) {
-                weightedScore += scoreCost * baseWeights.cost;
-                totalWeight += baseWeights.cost;
-            }
-            if (!isNaN(scoreContacts)) {
-                weightedScore += scoreContacts * baseWeights.contacts;
-                totalWeight += baseWeights.contacts;
-            }
-            if (!isNaN(scoreImpressions)) {
-                weightedScore += scoreImpressions * baseWeights.impressions;
-                totalWeight += baseWeights.impressions;
-            }
-            if (!isNaN(scoreReach)) {
-                weightedScore += scoreReach * baseWeights.reach;
-                totalWeight += baseWeights.reach;
-            }
-
-            if (totalWeight === 0) {
-                return { health: 0, color: 'var(--health-urgent)', label: "No Data" };
-            }
-
-            const health = Math.round(weightedScore / totalWeight);
             
-            let color, label;
-            if (health >= 85) { color = 'var(--health-excellent)'; label = "Excellent"; }
-            else if (health >= 65) { color = 'var(--health-good)'; label = "Good"; }
-            else if (health >= 45) { color = 'var(--health-review)'; label = "Review"; }
-            else if (health >= 25) { color = 'var(--health-attention)'; label = "Attention"; }
-            else { color = 'var(--health-urgent)'; label = "Urgent"; }
+            let score = 0;
+            // CPA: Lower is better
+            if (cpa > 0 && cpa <= t.cpa) score += 50; 
+            else if (cpa > t.cpa) score += Math.max(0, (2 - cpa/t.cpa)*50);
             
-            return { health, color, label };
+            // Contacts: Higher is better
+            if (contacts >= t.contacts) score += 50; 
+            else score += (contacts/t.contacts)*50;
+            
+            score = Math.round(score || 0);
+            return getColorLabel(score);
         }
 
-        // ===========================================
-        // == FUNCIONES DE COLOR
-        // ===========================================
-
-        function getPerformanceColor(value, target) {
-            if (isNaN(value) || isNaN(target) || target <= 0) return 'text-neutral';
-            if (value >= target) return 'text-excellent';
-            if (value >= target * 0.8) return 'text-good';
-            if (value >= target * 0.6) return 'text-review';
-            if (value >= target * 0.4) return 'text-attention';
-            return 'text-urgent';
+        function getColorLabel(score) {
+            if (isNaN(score)) return { health: 0, color: 'gray', label: 'N/A' };
+            let color;
+            if (score >= 80) color = 'var(--health-excellent)';
+            else if (score >= 60) color = 'var(--health-good)';
+            else if (score >= 40) color = 'var(--health-review)';
+            else color = 'var(--health-urgent)';
+            return { health: score, color, label: '' };
         }
 
-        function getCostColor(value, target) {
-            if (isNaN(value) || isNaN(target) || target <= 0) return 'text-neutral';
-            if (value <= target) return 'text-excellent';
-            if (value <= target * 1.25) return 'text-good';
-            if (value <= target * 1.5) return 'text-review';
-            if (value <= target * 1.75) return 'text-attention';
-            return 'text-urgent';
+        function updateSummaryCards(data, level) {
+            const section = document.getElementById(dashboardState[level].sectionId);
+            const total = data.length;
+            const urgent = data.filter(d => d.healthInfo.health < 40).length;
+            
+            let avgText = '';
+            if (level === 'tiktok') {
+                 // Calc Avg Eng
+                 let sumEng = 0;
+                 data.forEach(d => sumEng += (sanitizePercentage(d[TIKTOK_COLS.ENGAGEMENT_RATE]) || 0));
+                 avgText = (sumEng / total).toFixed(2) + '%';
+            } else {
+                 // Calc CPA
+                 let spend = 0, contacts = 0;
+                 data.forEach(d => {
+                     spend += sanitizeNumber(d['amount spent (usd)'] || d['amount spent']) || 0;
+                     contacts += sanitizeNumber(d['new messaging contacts']) || 0;
+                 });
+                 avgText = contacts > 0 ? '$' + (spend/contacts).toFixed(2) : '-';
+            }
+
+            section.querySelector('.total-count').textContent = total;
+            section.querySelector('.action-count').textContent = urgent;
+            if(level === 'tiktok') section.querySelector('.avg-engagement').textContent = avgText;
+            else section.querySelector('.avg-cost').textContent = avgText;
         }
 
-
-        // ===========================================
-        // == UTILITY FUNCTIONS
-        // ===========================================
-
-        function sanitizeNumber(value) {
-            if (value === undefined || value === null || value === '' || value === '-' || String(value).trim().toLowerCase() === 'n/a') return NaN;
-            let stringValue = String(value).replace(/[^0-9.-]/g, ''); 
-            if (stringValue === '' || stringValue === '-') return NaN;
-            return Number(stringValue);
+        function sanitizeNumber(val) {
+            if (!val) return NaN;
+            return Number(String(val).replace(/[^0-9.-]/g, ''));
+        }
+        function sanitizePercentage(val) {
+            return sanitizeNumber(val);
         }
 
-        function sanitizePercentage(value) {
-            if (value === undefined || value === null || value === '' || value === '-' || String(value).trim().toLowerCase() === 'n/a') return NaN;
-            let stringValue = String(value).replace(/[^0-img.-]/g, '');
-            if (stringValue === '' || stringValue === '-') return NaN;
-            return Number(stringValue);
-        }
-
-        // --- START THE APP ---
         init();
     });
 </script>
