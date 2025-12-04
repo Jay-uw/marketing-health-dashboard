@@ -7,7 +7,6 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap');
@@ -226,13 +225,13 @@
         .health-cell { display: flex; align-items: center; gap: 10px; }
         .health-score { font-weight: 700; padding: 3px 8px; border-radius: 12px; color: white; font-size: 12px; min-width: 25px; text-align: center;}
 
-        /* Text Colors */
+        /* Text Colors for KPI Metrics */
         .metric-value { font-weight: 600; }
-        .text-excellent { color: var(--health-excellent); }
-        .text-good { color: var(--health-good); }
-        .text-review { color: #b08f0d; }
-        .text-attention { color: var(--health-attention); }
-        .text-urgent { color: var(--health-urgent); }
+        .text-excellent { color: var(--health-excellent); font-weight: 700; }
+        .text-good { color: var(--health-good); font-weight: 600; }
+        .text-review { color: #d4ac0d; font-weight: 600; }
+        .text-attention { color: var(--health-attention); font-weight: 600; }
+        .text-urgent { color: var(--health-urgent); font-weight: 700; }
         .text-neutral { color: var(--color-dark-gray-text); }
 
         /* --- FOOTER & BADGES --- */
@@ -268,16 +267,33 @@
             transform: scale(1.05);
         }
 
-        /* Adjust HubSpot Image size */
         .academy-badge img {
             height: 120px; 
             width: auto;
             display: block;
         }
 
-        /* Make Meta badge (Center) slightly larger or prominent if needed */
+        /* Styles specifically for the Credly Iframe container if needed */
         .badge-item.meta-badge {
-            transform: scale(1.1); /* 10% larger */
+            min-width: 150px;
+            min-height: 270px;
+        }
+        
+        /* New Version Text Styling */
+        .version-display {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            
+            /* CHANGE: Color red to stand out on black background */
+            color: var(--color-primary-red);
+            
+            margin-top: 50px;
+            border-top: 1px solid var(--color-primary-red);
+            display: inline-block;
+            padding-top: 15px;
         }
 
         /* Responsive */
@@ -347,6 +363,10 @@
                     <div class="control-group">
                         <label for="metaNewContactsTarget">Target Volume (Contacts)</label>
                         <input id="metaNewContactsTarget" type="number" value="150" step="1">
+                    </div>
+                    <div class="control-group">
+                        <label for="metaReachTarget">Target Reach</label>
+                        <input id="metaReachTarget" type="number" value="50000" step="1000">
                     </div>
                     <div class="control-group">
                         <label for="metaImpressionsTarget">Target Impressions</label>
@@ -530,6 +550,7 @@
 
             <div class="badge-item meta-badge">
                 <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="96d65e88-747c-424f-a469-1d18c9eb4f15" data-share-badge-host="https://www.credly.com"></div>
+                <script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
             </div>
 
             <div class='academy-badge badge-item'>
@@ -540,7 +561,9 @@
 
         </div>
 
-        <p style="margin-top: 30px;">v.3.2.0</p>
+        <div class="version-display">
+            v.3.2.0
+        </div>
     </footer>
 
 <script>
@@ -650,6 +673,7 @@
         // Inputs
         const metaCostPerConversationTargetInput = document.getElementById('metaCostPerConversationTarget');
         const metaNewContactsTargetInput = document.getElementById('metaNewContactsTarget');
+        const metaReachTargetInput = document.getElementById('metaReachTarget'); 
         const metaImpressionsTargetInput = document.getElementById('metaImpressionsTarget');
         
         const tiktokViewsTargetInput = document.getElementById('tiktokViewsTarget');
@@ -696,7 +720,7 @@
         // Initialize Listeners
         function init() {
             // Parameter Change Listeners
-            [metaCostPerConversationTargetInput, metaNewContactsTargetInput, metaImpressionsTargetInput,
+            [metaCostPerConversationTargetInput, metaNewContactsTargetInput, metaReachTargetInput, metaImpressionsTargetInput,
              tiktokViewsTargetInput, tiktokEngageTargetInput, tiktokWatchTimeTargetInput, tiktokRetentionTargetInput]
              .forEach(input => input.addEventListener('input', reRenderAllLevels));
 
@@ -837,7 +861,6 @@
                     filteredData = filteredData.filter(row => String(row[config.filterKey]).trim() === filterVal);
                 } else {
                     // Strict Word Boundary match for Meta (finding " GA " or " AL " as whole words)
-                    // This fixes the issue where "AL" matched "Digital", "Legal", etc.
                     const regex = new RegExp(`\\b${filterVal}\\b`, 'i');
                     filteredData = filteredData.filter(row => regex.test(String(row[config.nameKey])));
                 }
@@ -847,6 +870,29 @@
                 renderTikTokTable(filteredData, tableBody);
             } else {
                 renderMetaTable(filteredData, tableBody, level);
+            }
+        }
+
+        // --- COLOR HELPER FOR METRICS ---
+        function getMetricClass(value, target, isLowerBetter = false) {
+            if (!target || isNaN(value)) return 'text-neutral';
+            
+            const ratio = value / target;
+
+            if (isLowerBetter) {
+                // Lower is better (e.g. CPA)
+                if (ratio <= 0.8) return 'text-excellent';
+                if (ratio <= 1.0) return 'text-good';
+                if (ratio <= 1.2) return 'text-review';
+                if (ratio <= 1.5) return 'text-attention';
+                return 'text-urgent';
+            } else {
+                // Higher is better (e.g. Views, Reach)
+                if (ratio >= 1.1) return 'text-excellent';
+                if (ratio >= 1.0) return 'text-good';
+                if (ratio >= 0.8) return 'text-review';
+                if (ratio >= 0.6) return 'text-attention';
+                return 'text-urgent';
             }
         }
 
@@ -873,16 +919,28 @@
                 const link = row[TIKTOK_COLS.LINK] || '#';
                 const displayLink = link !== '#' ? `<a href="${link}" target="_blank">View Video</a>` : 'N/A';
                 
+                // Get Raw Values
+                const views = sanitizeNumber(row[TIKTOK_COLS.VIEWS]);
+                const eng = sanitizePercentage(row[TIKTOK_COLS.ENGAGEMENT_RATE]);
+                const watch = sanitizePercentage(row[TIKTOK_COLS.AVG_WATCH_TIME_PERCENT]);
+                const ret = sanitizePercentage(row[TIKTOK_COLS.RETENTION_3S]);
+
+                // Get Color Classes
+                const viewsClass = getMetricClass(views, targets.views, false);
+                const engClass = getMetricClass(eng, targets.engage, false);
+                const watchClass = getMetricClass(watch, targets.watch, false);
+                const retClass = getMetricClass(ret, targets.retention, false);
+
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td><div class="health-cell"><span class="health-score" style="background-color: ${color};">${health}</span></div></td>
                     <td>${row[TIKTOK_COLS.DATE] || '-'}</td>
                     <td>${row[TIKTOK_COLS.ACCOUNT] || '-'}</td>
                     <td class="video-link-cell">${displayLink}</td>
-                    <td>${sanitizeNumber(row[TIKTOK_COLS.VIEWS]) || 0}</td>
-                    <td>${row[TIKTOK_COLS.ENGAGEMENT_RATE] || '-'}</td>
-                    <td>${row[TIKTOK_COLS.AVG_WATCH_TIME_PERCENT] || '-'}</td>
-                    <td>${row[TIKTOK_COLS.RETENTION_3S] || '-'}</td>
+                    <td class="${viewsClass}">${views || 0}</td>
+                    <td class="${engClass}">${eng || 0}%</td>
+                    <td class="${watchClass}">${watch || 0}%</td>
+                    <td class="${retClass}">${ret || 0}%</td>
                 `;
                 tableBody.appendChild(tr);
             });
@@ -892,7 +950,9 @@
         function renderMetaTable(data, tableBody, level) {
             const targets = {
                 cpa: sanitizeNumber(document.getElementById('metaCostPerConversationTarget').value),
-                contacts: sanitizeNumber(document.getElementById('metaNewContactsTarget').value)
+                contacts: sanitizeNumber(document.getElementById('metaNewContactsTarget').value),
+                reach: sanitizeNumber(document.getElementById('metaReachTarget').value),
+                impressions: sanitizeNumber(document.getElementById('metaImpressionsTarget').value)
             };
 
             const processed = data.map(row => {
@@ -908,27 +968,39 @@
             processed.forEach(row => {
                 const { health, color } = row.healthInfo;
                 
+                const spendVal = sanitizeNumber(row['amount spent (usd)'] || row['amount spent']);
+                const contactsVal = sanitizeNumber(row['new messaging contacts']);
+                const cpaVal = sanitizeNumber(row['cost per messaging conversation started (usd)']);
+                const reachVal = sanitizeNumber(row['reach']);
+                const impVal = sanitizeNumber(row['impressions']);
+
+                // Calculate Color Classes for each cell
+                const contactsClass = getMetricClass(contactsVal, targets.contacts, false); // Higher better
+                const cpaClass = getMetricClass(cpaVal, targets.cpa, true); // Lower better
+                const reachClass = getMetricClass(reachVal, targets.reach, false); // Higher better
+                const impClass = getMetricClass(impVal, targets.impressions, false); // Higher better
+
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td><div class="health-cell"><span class="health-score" style="background-color: ${color};">${health}</span></div></td>
                     <td>${row[config.nameKey] || '-'}</td>
-                    <td>$${sanitizeNumber(row['amount spent (usd)'] || row['amount spent']) || 0}</td>
-                    <td>${sanitizeNumber(row['new messaging contacts']) || 0}</td>
-                    <td>$${sanitizeNumber(row['cost per messaging conversation started (usd)']) || 0}</td>
-                    <td>${sanitizeNumber(row['reach']) || 0}</td>
-                    <td>${sanitizeNumber(row['impressions']) || 0}</td>
+                    <td>$${spendVal || 0}</td>
+                    <td class="${contactsClass}">${contactsVal || 0}</td>
+                    <td class="${cpaClass}">$${cpaVal || 0}</td>
+                    <td class="${reachClass}">${reachVal || 0}</td>
+                    <td class="${impClass}">${impVal || 0}</td>
                 `;
                 tableBody.appendChild(tr);
             });
             updateSummaryCards(processed, level);
         }
 
-        // --- HEALTH LOGIC (SIMPLIFIED) ---
+        // --- HEALTH LOGIC ---
         function getTikTokHealth(row, t) {
             const views = sanitizeNumber(row[TIKTOK_COLS.VIEWS]);
             const eng = sanitizePercentage(row[TIKTOK_COLS.ENGAGEMENT_RATE]);
             
-            // Simple logic: weighted avg
+            // Weighted Logic
             let score = 0;
             if (views >= t.views) score += 40; else score += (views/t.views)*40;
             if (eng >= t.engage) score += 60; else score += (eng/t.engage)*60;
@@ -938,18 +1010,35 @@
         }
 
         function getMetaHealth(row, t) {
-            const cpa = sanitizeNumber(row['cost per messaging conversation started (usd)']);
-            const contacts = sanitizeNumber(row['new messaging contacts']);
-            
+            // Split weight between 4 main metrics
             let score = 0;
-            // CPA: Lower is better
-            if (cpa > 0 && cpa <= t.cpa) score += 50; 
-            else if (cpa > t.cpa) score += Math.max(0, (2 - cpa/t.cpa)*50);
+            const weightPerMetric = 25; 
+
+            // 1. CPA (Lower is better)
+            const cpa = sanitizeNumber(row['cost per messaging conversation started (usd)']);
+            if (cpa > 0) {
+                if (cpa <= t.cpa) score += weightPerMetric; // Met target
+                else {
+                    const penalty = (cpa - t.cpa) / t.cpa;
+                    score += Math.max(0, (1 - penalty) * weightPerMetric);
+                }
+            }
+
+            // 2. Contacts (Higher is better)
+            const contacts = sanitizeNumber(row['new messaging contacts']);
+            if (contacts >= t.contacts) score += weightPerMetric; 
+            else score += (contacts/t.contacts)*weightPerMetric;
             
-            // Contacts: Higher is better
-            if (contacts >= t.contacts) score += 50; 
-            else score += (contacts/t.contacts)*50;
-            
+            // 3. Reach (Higher is better)
+            const reach = sanitizeNumber(row['reach']);
+            if (reach >= t.reach) score += weightPerMetric;
+            else score += (reach/t.reach)*weightPerMetric;
+
+            // 4. Impressions (Higher is better)
+            const imp = sanitizeNumber(row['impressions']);
+            if (imp >= t.impressions) score += weightPerMetric;
+            else score += (imp/t.impressions)*weightPerMetric;
+
             score = Math.round(score || 0);
             return getColorLabel(score);
         }
@@ -974,7 +1063,7 @@
                  // Calc Avg Eng
                  let sumEng = 0;
                  data.forEach(d => sumEng += (sanitizePercentage(d[TIKTOK_COLS.ENGAGEMENT_RATE]) || 0));
-                 avgText = (sumEng / total).toFixed(2) + '%';
+                 avgText = (total > 0) ? (sumEng / total).toFixed(2) + '%' : '-';
             } else {
                  // Calc CPA
                  let spend = 0, contacts = 0;
@@ -992,7 +1081,7 @@
         }
 
         function sanitizeNumber(val) {
-            if (!val) return NaN;
+            if (!val) return 0;
             return Number(String(val).replace(/[^0-9.-]/g, ''));
         }
         function sanitizePercentage(val) {
