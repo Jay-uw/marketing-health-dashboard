@@ -155,13 +155,15 @@
             padding: 24px;
             position: sticky;
             top: 100px; 
+            max-height: 80vh;
+            overflow-y: auto;
         }
 
         .controls-panel h2 { margin-top: 0; font-size: 18px; border-bottom: 2px solid var(--color-primary-red); padding-bottom: 10px; margin-bottom: 24px; }
-        .controls-panel h3 { font-size: 15px; font-weight: 700; color: var(--color-primary-red); margin-top: 20px; margin-bottom: 16px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+        .controls-panel h3 { font-size: 14px; font-weight: 700; color: var(--color-primary-red); margin-top: 25px; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px;}
         .controls-panel h3:first-of-type { margin-top: 0; }
-        .control-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; }
-        .control-group input[type="number"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-family: 'Montserrat', sans-serif; margin-bottom: 20px; }
+        .control-group label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 12px; color: #555; }
+        .control-group input[type="number"] { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-family: 'Montserrat', sans-serif; margin-bottom: 15px; font-size: 13px; }
 
         /* --- DASHBOARD SECTIONS --- */
         .dashboard-sections { display: flex; flex-direction: column; gap: 40px; min-width: 0; }
@@ -193,7 +195,8 @@
             border: 1px solid #ccc;
             font-family: 'Montserrat', sans-serif;
             background-color: #f9f9f9;
-            min-width: 200px;
+            min-width: 250px;
+            max-width: 400px;
         }
         
         .level-content { display: flex; flex-direction: column; gap: 30px; align-items: flex-start; }
@@ -301,7 +304,7 @@
             .hero-section { grid-template-columns: 1fr; text-align: center; }
             .hero-text { border-left: none; border-top: 5px solid var(--color-primary-red); }
             .main-layout { grid-template-columns: 1fr; }
-            .controls-panel { position: static; margin-bottom: 40px; }
+            .controls-panel { position: static; margin-bottom: 40px; max-height: none; }
             .guide-steps { grid-template-columns: 1fr; }
             .badges-wrapper { flex-direction: column; gap: 20px; }
         }
@@ -334,17 +337,17 @@
             <div class="step-card">
                 <div class="step-number">1</div>
                 <h3>Set Targets</h3>
-                <p>Define your KPI targets in the sidebar (Cost per Lead, Views, Engagement) to calibrate the health scoring algorithm.</p>
+                <p>Define specific targets for Campaigns, Ad Sets, and Ads in the sidebar to calibrate the health scoring.</p>
             </div>
             <div class="step-card">
                 <div class="step-number">2</div>
                 <h3>Upload Data</h3>
-                <p>Export your reports from Meta Ads Manager or TikTok Analytics as <strong>.xlsx</strong> files and upload them to the corresponding section.</p>
+                <p>Export your reports from Meta Ads Manager or TikTok Analytics as <strong>.xlsx</strong> files and upload them.</p>
             </div>
             <div class="step-card">
                 <div class="step-number">3</div>
-                <h3>Filter & Analyze</h3>
-                <p>Use the drop-down filters to select specific Accounts or States (e.g., GA, AL). Focus on items marked "Urgent".</p>
+                <h3>Filter Smartly</h3>
+                <p>Use the drop-down filters. For Ad Sets, filter by Campaign. For Ads, filter by Ad Set.</p>
             </div>
         </div>
     </section>
@@ -354,26 +357,6 @@
             <aside class="controls-panel">
                 <h2>Parameters (KPIs)</h2>
                 
-                <div class="parameters-group">
-                    <h3>Meta Ads Targets</h3>
-                    <div class="control-group">
-                        <label for="metaCostPerConversationTarget">Target CPA (Msg)</label>
-                        <input id="metaCostPerConversationTarget" type="number" value="8" step="0.5">
-                    </div>
-                    <div class="control-group">
-                        <label for="metaNewContactsTarget">Target Volume (Contacts)</label>
-                        <input id="metaNewContactsTarget" type="number" value="150" step="1">
-                    </div>
-                    <div class="control-group">
-                        <label for="metaReachTarget">Target Reach</label>
-                        <input id="metaReachTarget" type="number" value="50000" step="1000">
-                    </div>
-                    <div class="control-group">
-                        <label for="metaImpressionsTarget">Target Impressions</label>
-                        <input id="metaImpressionsTarget" type="number" value="100000" step="1000">
-                    </div>
-                </div>
-
                 <div class="parameters-group">
                     <h3>TikTok Targets</h3>
                     <div class="control-group">
@@ -393,6 +376,66 @@
                         <input id="tiktokRetentionTarget" type="number" value="70" step="1">
                     </div>
                 </div>
+
+                <div class="parameters-group">
+                    <h3>Campaign Targets</h3>
+                    <div class="control-group">
+                        <label for="campCPATarget">Target CPA (Msg)</label>
+                        <input id="campCPATarget" type="number" value="8" step="0.5">
+                    </div>
+                    <div class="control-group">
+                        <label for="campContactsTarget">Target Contacts</label>
+                        <input id="campContactsTarget" type="number" value="150" step="1">
+                    </div>
+                    <div class="control-group">
+                        <label for="campReachTarget">Target Reach</label>
+                        <input id="campReachTarget" type="number" value="50000" step="1000">
+                    </div>
+                    <div class="control-group">
+                        <label for="campImpressionsTarget">Target Impressions</label>
+                        <input id="campImpressionsTarget" type="number" value="70000" step="1000">
+                    </div>
+                </div>
+
+                <div class="parameters-group">
+                    <h3>Ad Set Targets</h3>
+                    <div class="control-group">
+                        <label for="adsetCPATarget">Target CPA (Msg)</label>
+                        <input id="adsetCPATarget" type="number" value="8" step="0.5">
+                    </div>
+                    <div class="control-group">
+                        <label for="adsetContactsTarget">Target Contacts</label>
+                        <input id="adsetContactsTarget" type="number" value="50" step="1">
+                    </div>
+                    <div class="control-group">
+                        <label for="adsetReachTarget">Target Reach</label>
+                        <input id="adsetReachTarget" type="number" value="15000" step="1000">
+                    </div>
+                    <div class="control-group">
+                        <label for="adsetImpressionsTarget">Target Impressions</label>
+                        <input id="adsetImpressionsTarget" type="number" value="20000" step="1000">
+                    </div>
+                </div>
+
+                <div class="parameters-group">
+                    <h3>Ad Targets</h3>
+                    <div class="control-group">
+                        <label for="adCPATarget">Target CPA (Msg)</label>
+                        <input id="adCPATarget" type="number" value="8" step="0.5">
+                    </div>
+                    <div class="control-group">
+                        <label for="adContactsTarget">Target Contacts</label>
+                        <input id="adContactsTarget" type="number" value="15" step="1">
+                    </div>
+                    <div class="control-group">
+                        <label for="adReachTarget">Target Reach</label>
+                        <input id="adReachTarget" type="number" value="4000" step="1000">
+                    </div>
+                     <div class="control-group">
+                        <label for="adImpressionsTarget">Target Impressions</label>
+                        <input id="adImpressionsTarget" type="number" value="6000" step="500">
+                    </div>
+                </div>
             </aside>
 
             <div class="dashboard-sections">
@@ -407,11 +450,9 @@
                     </div>
                     <div class="level-content">
                         <div class="file-upload-area">
-                            <div class="control-group">
-                                <input type="file" id="xlsxFileTikTok" accept=".xlsx">
-                                <label for="xlsxFileTikTok" class="file-upload-btn">Upload TikTok XLSX</label>
-                                <p class="fileName" style="font-size: 12px; text-align: center; margin-top: 8px;"></p>
-                            </div>
+                            <input type="file" id="xlsxFileTikTok" accept=".xlsx">
+                            <label for="xlsxFileTikTok" class="file-upload-btn">Upload TikTok XLSX</label>
+                            <p class="fileName" style="font-size: 12px; text-align: center; margin-top: 8px;"></p>
                         </div>
                         <div class="data-display-area">
                             <div class="summary-cards">
@@ -444,8 +485,8 @@
                     <div class="section-header">
                         <h2>Campaigns (Meta)</h2>
                         <div class="result-filters">
-                            <label for="campaignsAccountFilter" style="font-size: 13px; font-weight: 600;">Filter by State:</label>
-                            <select id="campaignsAccountFilter"><option value="all">All States</option></select>
+                            <label for="campaignsAccountFilter" style="font-size: 13px; font-weight: 600;">Filter by Campaign:</label>
+                            <select id="campaignsAccountFilter"><option value="all">All Campaigns</option></select>
                         </div>
                     </div>
                     <div class="level-content">
@@ -474,8 +515,8 @@
                     <div class="section-header">
                         <h2>Ad Sets (Meta)</h2>
                          <div class="result-filters">
-                            <label for="adSetsAccountFilter" style="font-size: 13px; font-weight: 600;">Filter by State:</label>
-                            <select id="adSetsAccountFilter"><option value="all">All States</option></select>
+                            <label for="adSetsAccountFilter" style="font-size: 13px; font-weight: 600;">Filter by Campaign:</label>
+                            <select id="adSetsAccountFilter"><option value="all">All Campaigns</option></select>
                         </div>
                     </div>
                      <div class="level-content">
@@ -504,8 +545,8 @@
                      <div class="section-header">
                         <h2>Ads (Meta)</h2>
                          <div class="result-filters">
-                            <label for="adsAccountFilter" style="font-size: 13px; font-weight: 600;">Filter by State:</label>
-                            <select id="adsAccountFilter"><option value="all">All States</option></select>
+                            <label for="adsAccountFilter" style="font-size: 13px; font-weight: 600;">Filter by Ad Set:</label>
+                            <select id="adsAccountFilter"><option value="all">All Ad Sets</option></select>
                         </div>
                     </div>
                      <div class="level-content">
@@ -522,7 +563,7 @@
                             </div>
                             <div class="table-container">
                                 <table>
-                                    <thead><tr><th>Health</th><th>Ad Name</th><th>Amount Spent</th><th>New Contacts</th><th>CPA</th><th>Reach</th><th>Impressions</th></tr></thead>
+                                    <thead><tr><th>Health</th><th>Ad Name</th><th>Ad Set Name</th><th>Amount Spent</th><th>New Contacts</th><th>CPA</th><th>Reach</th><th>Impressions</th></tr></thead>
                                     <tbody class="table-body"><tr><td colspan="8" style="text-align: center; padding: 40px;">Upload a file to see ad data.</td></tr></tbody>
                                 </table>
                             </div>
@@ -562,7 +603,7 @@
         </div>
 
         <div class="version-display">
-            v.3.2.0
+            v.4.2.1
         </div>
     </footer>
 
@@ -670,12 +711,24 @@
         
         init3D(); // Start the 3D Graph
 
-        // Inputs
-        const metaCostPerConversationTargetInput = document.getElementById('metaCostPerConversationTarget');
-        const metaNewContactsTargetInput = document.getElementById('metaNewContactsTarget');
-        const metaReachTargetInput = document.getElementById('metaReachTarget'); 
-        const metaImpressionsTargetInput = document.getElementById('metaImpressionsTarget');
-        
+        // --- DOM Elements for Inputs ---
+        // Campaign
+        const campCPATarget = document.getElementById('campCPATarget');
+        const campContactsTarget = document.getElementById('campContactsTarget');
+        const campReachTarget = document.getElementById('campReachTarget');
+        const campImpressionsTarget = document.getElementById('campImpressionsTarget');
+        // Ad Set
+        const adsetCPATarget = document.getElementById('adsetCPATarget');
+        const adsetContactsTarget = document.getElementById('adsetContactsTarget');
+        const adsetReachTarget = document.getElementById('adsetReachTarget');
+        const adsetImpressionsTarget = document.getElementById('adsetImpressionsTarget');
+        // Ad
+        const adCPATarget = document.getElementById('adCPATarget');
+        const adContactsTarget = document.getElementById('adContactsTarget');
+        const adReachTarget = document.getElementById('adReachTarget');
+        const adImpressionsTarget = document.getElementById('adImpressionsTarget');
+
+        // TikTok
         const tiktokViewsTargetInput = document.getElementById('tiktokViewsTarget');
         const tiktokEngageTargetInput = document.getElementById('tiktokEngageTarget');
         const tiktokWatchTimeTargetInput = document.getElementById('tiktokWatchTimeTarget');
@@ -689,20 +742,47 @@
 
         const dashboardState = {
             campaigns: { 
-                data: [], nameKey: 'campaign name', headerKey: 'campaign name', requiredKey: 'impressions', 
-                sectionId: 'campaigns-section', type: 'meta', filterElement: campaignsAccountFilter 
+                data: [], 
+                nameKey: 'campaign name', 
+                headerKey: 'campaign name', 
+                requiredKey: 'impressions', 
+                sectionId: 'campaigns-section', 
+                type: 'meta', 
+                filterElement: campaignsAccountFilter,
+                // For Campaigns, we filter by the campaign name itself
+                groupingKey: 'campaign name' 
             },
             adSets: { 
-                data: [], nameKey: 'ad set name', headerKey: 'ad set name', requiredKey: 'impressions', 
-                sectionId: 'ad-sets-section', type: 'meta', filterElement: adSetsAccountFilter 
+                data: [], 
+                nameKey: 'ad set name', 
+                headerKey: 'ad set name', 
+                requiredKey: 'impressions', 
+                sectionId: 'ad-sets-section', 
+                type: 'meta', 
+                filterElement: adSetsAccountFilter,
+                // For Ad Sets, we want to filter by the PARENT campaign name
+                groupingKey: 'campaign name' 
             },
             ads: { 
-                data: [], nameKey: 'ad name', headerKey: 'ad name', requiredKey: 'impressions', 
-                sectionId: 'ads-section', type: 'meta', filterElement: adsAccountFilter 
+                data: [], 
+                nameKey: 'ad name', 
+                headerKey: 'ad name', 
+                requiredKey: 'impressions', 
+                sectionId: 'ads-section', 
+                type: 'meta', 
+                filterElement: adsAccountFilter,
+                // For Ads, we want to filter by the PARENT Ad Set name
+                groupingKey: 'ad set name' 
             },
             tiktok: { 
-                data: [], nameKey: 'video link', headerKey: 'date posted', requiredKey: 'views', 
-                sectionId: 'tiktok-section', type: 'tiktok', filterElement: tiktokAccountFilter 
+                data: [], 
+                nameKey: 'video link', 
+                headerKey: 'date posted', 
+                requiredKey: 'views', 
+                sectionId: 'tiktok-section', 
+                type: 'tiktok', 
+                filterElement: tiktokAccountFilter,
+                groupingKey: 'account'
             }
         };
 
@@ -719,10 +799,15 @@
 
         // Initialize Listeners
         function init() {
-            // Parameter Change Listeners
-            [metaCostPerConversationTargetInput, metaNewContactsTargetInput, metaReachTargetInput, metaImpressionsTargetInput,
-             tiktokViewsTargetInput, tiktokEngageTargetInput, tiktokWatchTimeTargetInput, tiktokRetentionTargetInput]
-             .forEach(input => input.addEventListener('input', reRenderAllLevels));
+            // Parameter Change Listeners - Update to listen to all new inputs
+            const allInputs = [
+                campCPATarget, campContactsTarget, campReachTarget, campImpressionsTarget,
+                adsetCPATarget, adsetContactsTarget, adsetReachTarget, adsetImpressionsTarget,
+                adCPATarget, adContactsTarget, adReachTarget, adImpressionsTarget,
+                tiktokViewsTargetInput, tiktokEngageTargetInput, tiktokWatchTimeTargetInput, tiktokRetentionTargetInput
+            ];
+            
+            allInputs.forEach(input => input.addEventListener('input', reRenderAllLevels));
 
             // File Upload Listeners
             document.getElementById('xlsxFileCampaigns').addEventListener('change', (e) => handleFileSelect(e, 'campaigns'));
@@ -790,7 +875,7 @@
 
                     levelConfig.data = jsonData;
                     
-                    // Populate Filters
+                    // Populate Filters Dynamically
                     populateFilter(level, jsonData);
 
                     renderData(level);
@@ -803,43 +888,40 @@
             reader.readAsArrayBuffer(file);
         }
 
-        // --- FILTER LOGIC ---
+        // --- DYNAMIC SMART FILTER LOGIC ---
         function populateFilter(level, data) {
             const config = dashboardState[level];
             const select = config.filterElement;
+            const groupingKey = config.groupingKey;
             
-            // Determine default text based on level
-            const defaultText = (level === 'tiktok') ? "All Accounts" : "All States";
+            // Determine default text
+            let defaultText = "All";
+            if(level === 'campaigns') defaultText = "All Campaigns";
+            if(level === 'adSets') defaultText = "All Campaigns (View Ad Sets)";
+            if(level === 'ads') defaultText = "All Ad Sets (View Ads)";
+            if(level === 'tiktok') defaultText = "All Accounts";
+
             select.innerHTML = `<option value="all">${defaultText}</option>`;
             
             let uniqueValues = new Set();
-            let keyToFilter = '';
 
-            if (level === 'tiktok') {
-                keyToFilter = TIKTOK_COLS.ACCOUNT;
-                // Standard Collection for TikTok
-                data.forEach(row => {
-                    const val = row[keyToFilter];
-                    if (val) uniqueValues.add(String(val).trim());
-                });
-            } else {
-                // META LOGIC: Detect "GA" or "AL" as WHOLE WORDS in the Name Field
-                // Uses Regex \bGA\b and \bAL\b to avoid matching inside words (e.g., DigitAL, LegAL)
-                keyToFilter = config.nameKey; 
+            data.forEach(row => {
+                // Try to find the grouping key in the row
+                // For Ad Sets, this is 'campaign name'. If that column doesn't exist, we fallback to the item name.
+                let val = row[groupingKey];
                 
-                const regexGA = /\bGA\b/i;
-                const regexAL = /\bAL\b/i;
+                // Fallback for Meta if the grouping column is missing (e.g. custom report export)
+                if (!val && level !== 'tiktok') {
+                     // If we are in Ad Sets but can't find Campaign Name, use Ad Set Name as filter
+                     val = row[config.nameKey]; 
+                }
 
-                data.forEach(row => {
-                    const nameVal = String(row[keyToFilter] || "");
-                    if (regexGA.test(nameVal)) uniqueValues.add("GA");
-                    if (regexAL.test(nameVal)) uniqueValues.add("AL");
-                });
-            }
+                if (val) uniqueValues.add(String(val).trim());
+            });
 
-            config.filterKey = keyToFilter;
+            const sortedValues = Array.from(uniqueValues).sort();
 
-            Array.from(uniqueValues).sort().forEach(val => {
+            sortedValues.forEach(val => {
                 const option = document.createElement('option');
                 option.value = val;
                 option.textContent = val;
@@ -856,14 +938,13 @@
             const filterVal = config.filterElement.value;
             
             if (filterVal !== 'all') {
-                if (level === 'tiktok') {
-                    // Exact match for TikTok Account
-                    filteredData = filteredData.filter(row => String(row[config.filterKey]).trim() === filterVal);
-                } else {
-                    // Strict Word Boundary match for Meta (finding " GA " or " AL " as whole words)
-                    const regex = new RegExp(`\\b${filterVal}\\b`, 'i');
-                    filteredData = filteredData.filter(row => regex.test(String(row[config.nameKey])));
-                }
+                // Use the same logic as populate: filter by groupingKey if present, else nameKey
+                const filterKey = config.groupingKey;
+                
+                filteredData = filteredData.filter(row => {
+                    const rowVal = row[filterKey] || row[config.nameKey]; // Fallback if column missing
+                    return String(rowVal).trim() === filterVal;
+                });
             }
 
             if (config.type === 'tiktok') {
@@ -915,7 +996,7 @@
 
             tableBody.innerHTML = '';
             processed.forEach(row => {
-                const { health, color, label } = row.healthInfo;
+                const { health, color } = row.healthInfo;
                 const link = row[TIKTOK_COLS.LINK] || '#';
                 const displayLink = link !== '#' ? `<a href="${link}" target="_blank">View Video</a>` : 'N/A';
                 
@@ -948,12 +1029,30 @@
         }
 
         function renderMetaTable(data, tableBody, level) {
-            const targets = {
-                cpa: sanitizeNumber(document.getElementById('metaCostPerConversationTarget').value),
-                contacts: sanitizeNumber(document.getElementById('metaNewContactsTarget').value),
-                reach: sanitizeNumber(document.getElementById('metaReachTarget').value),
-                impressions: sanitizeNumber(document.getElementById('metaImpressionsTarget').value)
-            };
+            // Determine which targets to use based on level
+            let targets = {};
+            if (level === 'campaigns') {
+                targets = {
+                    cpa: sanitizeNumber(campCPATarget.value),
+                    contacts: sanitizeNumber(campContactsTarget.value),
+                    reach: sanitizeNumber(campReachTarget.value),
+                    impressions: sanitizeNumber(campImpressionsTarget.value)
+                };
+            } else if (level === 'adSets') {
+                 targets = {
+                    cpa: sanitizeNumber(adsetCPATarget.value),
+                    contacts: sanitizeNumber(adsetContactsTarget.value),
+                    reach: sanitizeNumber(adsetReachTarget.value),
+                    impressions: sanitizeNumber(adsetImpressionsTarget.value)
+                };
+            } else {
+                 targets = {
+                    cpa: sanitizeNumber(adCPATarget.value),
+                    contacts: sanitizeNumber(adContactsTarget.value),
+                    reach: sanitizeNumber(adReachTarget.value),
+                    impressions: sanitizeNumber(adImpressionsTarget.value)
+                };
+            }
 
             const processed = data.map(row => {
                 const healthInfo = getMetaHealth(row, targets);
@@ -972,23 +1071,34 @@
                 const contactsVal = sanitizeNumber(row['new messaging contacts']);
                 const cpaVal = sanitizeNumber(row['cost per messaging conversation started (usd)']);
                 const reachVal = sanitizeNumber(row['reach']);
-                const impVal = sanitizeNumber(row['impressions']);
+                const impVal = sanitizeNumber(row['impressions']); 
 
                 // Calculate Color Classes for each cell
-                const contactsClass = getMetricClass(contactsVal, targets.contacts, false); // Higher better
-                const cpaClass = getMetricClass(cpaVal, targets.cpa, true); // Lower better
-                const reachClass = getMetricClass(reachVal, targets.reach, false); // Higher better
-                const impClass = getMetricClass(impVal, targets.impressions, false); // Higher better
+                const contactsClass = getMetricClass(contactsVal, targets.contacts, false); 
+                const cpaClass = getMetricClass(cpaVal, targets.cpa, true); 
+                const reachClass = getMetricClass(reachVal, targets.reach, false); 
+                const impClass = getMetricClass(impVal, targets.impressions, false);
+
+                // Determine extra column content based on level
+                let extraCol = '';
+                if (level === 'ads') {
+                    extraCol = `<td>${row['ad set name'] || '-'}</td>`;
+                }
+                // NOTE: For Ad Sets, we removed Campaign Name column as requested.
+
+                // Determine final column (Impressions)
+                let finalCol = `<td class="${impClass}">${impVal || 0}</td>`;
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td><div class="health-cell"><span class="health-score" style="background-color: ${color};">${health}</span></div></td>
                     <td>${row[config.nameKey] || '-'}</td>
+                    ${extraCol}
                     <td>$${spendVal || 0}</td>
                     <td class="${contactsClass}">${contactsVal || 0}</td>
                     <td class="${cpaClass}">$${cpaVal || 0}</td>
                     <td class="${reachClass}">${reachVal || 0}</td>
-                    <td class="${impClass}">${impVal || 0}</td>
+                    ${finalCol}
                 `;
                 tableBody.appendChild(tr);
             });
@@ -1000,7 +1110,6 @@
             const views = sanitizeNumber(row[TIKTOK_COLS.VIEWS]);
             const eng = sanitizePercentage(row[TIKTOK_COLS.ENGAGEMENT_RATE]);
             
-            // Weighted Logic
             let score = 0;
             if (views >= t.views) score += 40; else score += (views/t.views)*40;
             if (eng >= t.engage) score += 60; else score += (eng/t.engage)*60;
@@ -1010,34 +1119,38 @@
         }
 
         function getMetaHealth(row, t) {
-            // Split weight between 4 main metrics
+            // Updated scoring for specific level targets
             let score = 0;
-            const weightPerMetric = 25; 
+            // Revised Weights including Impressions:
+            const weightCPA = 30;
+            const weightVol = 30;
+            const weightReach = 20;
+            const weightImp = 20;
 
             // 1. CPA (Lower is better)
             const cpa = sanitizeNumber(row['cost per messaging conversation started (usd)']);
             if (cpa > 0) {
-                if (cpa <= t.cpa) score += weightPerMetric; // Met target
+                if (cpa <= t.cpa) score += weightCPA; 
                 else {
                     const penalty = (cpa - t.cpa) / t.cpa;
-                    score += Math.max(0, (1 - penalty) * weightPerMetric);
+                    score += Math.max(0, (1 - penalty) * weightCPA);
                 }
             }
 
             // 2. Contacts (Higher is better)
             const contacts = sanitizeNumber(row['new messaging contacts']);
-            if (contacts >= t.contacts) score += weightPerMetric; 
-            else score += (contacts/t.contacts)*weightPerMetric;
+            if (contacts >= t.contacts) score += weightVol; 
+            else score += (contacts/t.contacts)*weightVol;
             
             // 3. Reach (Higher is better)
             const reach = sanitizeNumber(row['reach']);
-            if (reach >= t.reach) score += weightPerMetric;
-            else score += (reach/t.reach)*weightPerMetric;
+            if (reach >= t.reach) score += weightReach;
+            else score += (reach/t.reach)*weightReach;
 
             // 4. Impressions (Higher is better)
             const imp = sanitizeNumber(row['impressions']);
-            if (imp >= t.impressions) score += weightPerMetric;
-            else score += (imp/t.impressions)*weightPerMetric;
+            if (imp >= t.impressions) score += weightImp;
+            else score += (imp/t.impressions)*weightImp;
 
             score = Math.round(score || 0);
             return getColorLabel(score);
@@ -1060,12 +1173,10 @@
             
             let avgText = '';
             if (level === 'tiktok') {
-                 // Calc Avg Eng
                  let sumEng = 0;
                  data.forEach(d => sumEng += (sanitizePercentage(d[TIKTOK_COLS.ENGAGEMENT_RATE]) || 0));
                  avgText = (total > 0) ? (sumEng / total).toFixed(2) + '%' : '-';
             } else {
-                 // Calc CPA
                  let spend = 0, contacts = 0;
                  data.forEach(d => {
                      spend += sanitizeNumber(d['amount spent (usd)'] || d['amount spent']) || 0;
